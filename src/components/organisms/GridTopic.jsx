@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Topic from '../molecules/Topic'
 import { Link } from 'react-router-dom'
 import { deleteTopic } from '../../services/topic.services'
 import { getTopic } from '../../services/message.service'
+import DataChatContext from '../context/DataChatContext'
 
-function GridTopic(props) {  
-  const {data} = props
-
-  const [topic, setTopic] = useState([])
+function GridTopic() {  
+  const {topic, setTopic} = useContext(DataChatContext)
   const [dataTopic, setDataTopic] = useState([])
   const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handlerProps = () => {
-    setLoading(true)
-    setDataTopic(data)
-    setLoading(false)
-  }
-    
 
   const handlePopUp = (item) => {
-    setTopic(item)
     setToggle(true)
   } 
 
@@ -40,10 +32,6 @@ function GridTopic(props) {
     setToggle(false)
     getTopicHandler()
   }
-
-  useEffect(() => {
-    handlerProps()
-  }, [data])
 
   return (
     <div>
@@ -75,12 +63,12 @@ function GridTopic(props) {
       </div>
 
       <div className='grid grid-cols-1 px-4 pt-5 text-sm gap-1'>
-        {  (dataTopic !== undefined) ?
-          dataTopic.map((item, index) => {
+        {  (topic !== undefined) ?
+          topic.map((item, index) => {
             return (
               <Topic key={index}>
-                  <Link to={`/chat/${item._id}`} className='w-full'>
-                    <span>{item.title.length > 15 ? item.title.substring(0,15) : item.title}</span> 
+                  <Link to={`/chat/${item.id}`} className='w-full'>
+                    <span>{item.title.length > 25 ? item.title.substring(0,25) + '...' : item.title}</span> 
                   </Link>
                   <div className='group-hover:text-gray-500 text-secondary-bg' onClick={() => handlePopUp(item)}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 hover:text-gray-300">
