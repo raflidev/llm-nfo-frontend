@@ -14,6 +14,7 @@ function ChatHistory() {
   const [loading, setLoading] = useState(false)
   const [loadingTopic, setLoadingTopic] = useState(false)
   const [topic, setTopic] = useState([])
+  const [toggleUpload, setToggleUpload] = useState(false)
   
   const handleChange = (e) => {
     setText(e.target.value)
@@ -106,7 +107,7 @@ function ChatHistory() {
           null
         }
         
-        <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} />
+        <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} tonggle={toggleUpload} setTonggle={setToggleUpload} />
       </LayoutPage>
     </DataChatContext.Provider>
   )
