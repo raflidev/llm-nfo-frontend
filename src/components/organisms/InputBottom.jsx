@@ -6,9 +6,9 @@ export default function InputBottom(props) {
   const { setText, text, handleChange, submitHandler, loading, toggle, setToggle } = props
 
   return (
-    <div className='fixed bottom-5 w-11/12 md:w-10/12'>
-      <div className='flex justify-center'>
-        <div className='flex w-full md:w-1/2'>
+    <div className='fixed bottom-5 -right-3 md:w-8/12'>
+      <div className='flex'>
+        <div className='flex w-8/12'>
           <InputText setText={setText} text={text} handleChange={handleChange} loading={loading} submitHandler={submitHandler} toggle={toggle} setToggle={setToggle} />
           {/* <ButtonSend submitHandler={submitHandler} loading={loading} /> */}
         </div>

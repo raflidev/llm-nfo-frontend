@@ -10,7 +10,12 @@ export default function LayoutPage(props) {
           <GridTopic/>
       </div>
       <div className="w-11/12 md:w-10/12">
-          {children}
+      <div className='flex justify-center md:h-[75vh] xl:h-[90vh] overflow-y-auto'>
+        <div className='w-full md:w-11/12 lg:w-8/12 px-2 md:px-10'>
+          <div className='font-bold uppercase py-7 text-xl'>LLM-NFO</div>
+              {children}
+          </div>
+        </div>
       </div>
     </div>
   </div>

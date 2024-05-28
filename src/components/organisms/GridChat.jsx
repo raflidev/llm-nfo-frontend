@@ -7,21 +7,25 @@ import CQs from '../molecules/CQs';
 
 export default function GridChat(props) {
   const { setLoading} = props
-  const { chat, setChat} = useContext(DataChatContext)
+  const { chat, setChat, step, setStep} = useContext(DataChatContext)
 
   const [cq, setCq] = useState([])
 
 
   useEffect(() => {
-    setCq(chat.map((item) => item.output.CQs))
+    setCq(chat.map((item) => item?.output?.CQs))
   }, [chat])
   return (
-    <div className='flex justify-center h-[75vh] overflow-y-auto'>
-      <div className='w-full md:w-11/12 lg:w-1/2'>
-        <Scrollbars autoHide
-          autoHideTimeout={1000}
-          autoHideDuration={200}>
-          <div className='grid grid-cols-1 gap-8 px-2 md:px-10'>
+
+      
+
+      // {/* <Scrollbars autoHide
+      //   autoHideTimeout={1000}
+      //   autoHideDuration={200}> */}
+      
+      //     {/* </Scrollbars> */}
+
+          <div className='grid grid-cols-1 gap-8'>
               {
                 chat.map((item, index) => {
                   return (
@@ -48,8 +52,5 @@ export default function GridChat(props) {
                 })
               }
           </div>
-            </Scrollbars>
-      </div>
-      </div>
   )
 }

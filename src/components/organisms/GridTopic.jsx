@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Topic from '../molecules/Topic'
 import { Link } from 'react-router-dom'
 import { deleteTopic } from '../../services/topic.services'
-import { getTopic } from '../../services/message.service'
+import { getTopic } from '../../services/message.services'
 import DataChatContext from '../context/DataChatContext'
 
 function GridTopic() {  
@@ -10,7 +10,6 @@ function GridTopic() {
   const [dataTopic, setDataTopic] = useState([])
   const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(false)
-
 
   const handlePopUp = (item) => {
     setToggle(true)

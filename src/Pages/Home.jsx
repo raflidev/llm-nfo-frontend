@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import GridChat from '../components/organisms/GridChat'
 import LayoutPage from '../components/templates/LayoutPage'
 import InputBottom from '../components/organisms/InputBottom'
-import { devPrompt, sendMessage, sendMessageAPI, getTopic, sendTopic } from '../services/message.service'
+import { devPrompt, sendMessage, sendMessageAPI, getTopic, sendTopic } from '../services/message.services'
 import { useNavigate } from 'react-router-dom'
 import DataChatContext from '../components/context/DataChatContext'
 import UploadPopUp from '../components/organisms/UploadPopUp'
+import StepByStep from '../components/organisms/StepByStep'
 
 function Home() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Home() {
   const [toggleUpload, setToggleUpload] = useState(false)
   const [dataUpload, setDataUpload] = useState([])
   const [dataName, setDataName] = useState('')
+  const [step, setStep] = useState(1)
   
   const handleChange = (e) => {
     setText(e.target.value)
@@ -103,9 +105,11 @@ function Home() {
     getTopicHandler()
   }, [])
   return (
-    <DataChatContext.Provider value={{topic, setTopic, chat, setChat}}>
+    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep}}>
       <LayoutPage>
-        <div className='font-bold uppercase py-7'>LLM-NFO</div>
+        <StepByStep/>
+
+        
         <GridChat setLoading={setLoading}/>
         
         {
