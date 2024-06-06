@@ -49,7 +49,7 @@ export const sendMessage = () => {
 }
 
 export const sendMessageAPI = (data) => {
-  return axios.post(`${process.env.REACT_APP_API_URI}/chat`, data).then((res) => {
+  return axios.post(`${process.env.REACT_APP_API_URI}/conversation`, data).then((res) => {
     console.log(res.data);
     return res.data
   })

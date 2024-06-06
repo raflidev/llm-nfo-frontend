@@ -28,20 +28,20 @@ function Home() {
     setLoading(true)
     // send 2 message, before and after the AI response
     
-    setText('')
-    const topic = await sendTopic(data_topic);
-    const data_topic = {
-      title: topic.topic,
-    };
+    // setText('')
+    // const topic = await sendTopic(data_topic);
+    // const data_topic = {
+    //   title: topic.topic,
+    // };
 
     const data_chat = {
-      user_input: text,
-      topic_id: topic._id,
+      prompt: text,
     };
 
     const msg = await sendMessageAPI(data_chat);
-    setChat(msg.topic.conversation_history)
-    navigate("/chat/"+topic._id)
+    console.log(msg);
+    // setChat(msg.topic.conversation_history)
+    // navigate("/chat/"+topic._id)
     setLoading(false)
   }
 

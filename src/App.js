@@ -4,8 +4,12 @@ import {
   Route,
 } from "react-router-dom";
 
+import axios from 'axios'
+
 import Home from "./Pages/Home";
 import ChatHistory from "./Pages/ChatHistory";
+
+axios.defaults.withCredentials = true
 
 function App() {
   return (
