@@ -3,8 +3,11 @@ import Topic from '../molecules/Topic'
 import { Link } from 'react-router-dom'
 import { deleteTopic } from '../../services/topic.services'
 import { getTopic } from '../../services/message.services'
+import { useGoogleLogin } from '@react-oauth/google'
+import google from '../../assets/images/google.svg'
 import DataChatContext from '../context/DataChatContext'
 import axios from 'axios'
+import { Slide, toast } from 'react-toastify'
 
 function GridTopic() {  
   const {topic, setTopic} = useContext(DataChatContext)
@@ -13,20 +16,6 @@ function GridTopic() {
   const [loading, setLoading] = useState(false)
   const [loggedIn, setLoggedIn] = useState(null)
   const [user, setUser] = useState(null)
-
-  const checkLoginState = useCallback(async () => {
-    try {
-      const {
-        data: { loggedIn: logged_in, user },
-      } = await axios.get(`${process.env.REACT_APP_API_URI}/login`)
-
-      console.log(logged_in, user);
-      setLoggedIn(logged_in)
-      user && setUser(user)
-    } catch (err) {
-      console.error(err)
-    }
-  }, [])
 
   const handlePopUp = (item) => {
     setToggle(true)
@@ -49,24 +38,41 @@ function GridTopic() {
     getTopicHandler()
   }
 
-  // const loginGoogle = async () => {
-  //   // REACT_APP_API_URI
-  //   // await axios.post(`${process.env.REACT_APP_API_URI}/login`)
-  //   // .then(res => {
-  //   //   console.log(res)
-  //   // })
-
-  //   const response = await fetch(`${process.env.REACT_APP_API_URI}/login}`, {
-  //     method: 'GET',
-  //   })
-  //   const data = await response.json()
-  //   console.log(data);
-  //   // window.location.href = `${process.env.REACT_APP_API_URI}/login`
-  // }
-
-  useEffect(() => {
-    checkLoginState()
-  }, [checkLoginState])
+  const login = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      console.log(tokenResponse)
+      // console.log(process.env.REACT_APP_API_URI+'/login');
+      const data = {
+        access_token: tokenResponse.access_token,
+        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID
+      }
+      console.log(data);
+      axios.post(process.env.REACT_APP_API_URI+'/login', 
+        data
+      ).then((response) => {
+        console.log(response);
+        if(response.status === 200) {
+          localStorage.setItem('user', JSON.stringify(response.data.data))
+          toast.success(response.data.message, {
+            transition: Slide
+          })
+        }else{
+          toast.error(response.data.message, {
+            transition: Slide
+          })
+        }
+      }).catch((error) => {
+        // toast.error(error.response.data.message, {
+        //   transition: Slide
+        // })
+      })
+    },
+    onError: (error) => {
+      // toast.error(error.message, {
+      //   transition: Slide
+      // })
+    }
+  });
 
   return (
     <div className='flex justify-between flex-col h-full'>
@@ -128,7 +134,13 @@ function GridTopic() {
       </div>
 
       <div className=' px-4'>
-        <button onClick={() => checkLoginState()}>Google Auth</button>
+        {/* <button onClick={() => checkLoginState()}>Google Auth</button> */}
+        <button onClick={() => login()} type="button" className={`w-full block py-2 px-1 md:px-3 text-center border rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
+          <img src={google} alt="" />
+          <span>
+            Login dengan Google
+          </span>
+        </button>
       </div>
     </div>
   )
