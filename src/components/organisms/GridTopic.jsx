@@ -8,14 +8,18 @@ import google from '../../assets/images/google.svg'
 import DataChatContext from '../context/DataChatContext'
 import axios from 'axios'
 import { Slide, toast } from 'react-toastify'
+import { useQuery } from '@tanstack/react-query'
+import { getConversationByUserId } from '../../services/conversation.services'
 
 function GridTopic() {  
   const {topic, setTopic} = useContext(DataChatContext)
-  const [dataTopic, setDataTopic] = useState([])
   const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(false)
   const [loggedIn, setLoggedIn] = useState(null)
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')))
+  
+  const {data: dataTopic, isLoading: isLoadingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
+  console.log(dataTopic);
 
   const handlePopUp = (item) => {
     setToggle(true)
@@ -25,28 +29,17 @@ function GridTopic() {
     setToggle(false)
   }
 
-  const getTopicHandler = async () => {
-    setLoading(true)
-    const res = await getTopic()
-    setDataTopic(res)
-    setLoading(false)
-  }
-
   const handleDeleteTopic = async (id) => {
     await deleteTopic(id)
     setToggle(false)
-    getTopicHandler()
   }
 
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => {
-      console.log(tokenResponse)
-      // console.log(process.env.REACT_APP_API_URI+'/login');
       const data = {
         access_token: tokenResponse.access_token,
         client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID
       }
-      console.log(data);
       axios.post(process.env.REACT_APP_API_URI+'/login', 
         data
       ).then((response) => {
@@ -73,6 +66,10 @@ function GridTopic() {
       // })
     }
   });
+
+  useEffect(() => {
+    console.log(user);
+  }, [user])
 
   return (
     <div className='flex justify-between flex-col h-full'>

@@ -11,18 +11,23 @@ import ChatHistory from "./Pages/ChatHistory";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 axios.defaults.withCredentials = true
 
+const queryClient = new QueryClient()
+
 function App() {
   return (
-    <BrowserRouter>
-      <ToastContainer />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/chat/:id" element={<ChatHistory />} />
-        </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ToastContainer />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/chat/:id" element={<ChatHistory />} />
+          </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

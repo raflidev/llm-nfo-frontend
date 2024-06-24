@@ -109,7 +109,13 @@ function Home() {
       <LayoutPage>
         <StepByStep/>
 
-        
+        <div className='py-6'>
+          <div className='text-sm'>STEP 1</div>
+          <div className='font-semibold text-3xl'>Domain and scope</div>
+          <div className='font-light'>
+            Generate several competency questions with domain and scope specificity based on the domain and scope you have defined, adjusting the number of questions and the wording as needed
+          </div>
+        </div> 
         <GridChat setLoading={setLoading}/>
         
         {
