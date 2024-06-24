@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom'
 import DataChatContext from '../components/context/DataChatContext'
 import UploadPopUp from '../components/organisms/UploadPopUp'
 import StepByStep from '../components/organisms/StepByStep'
+import { getConversationById } from '../services/conversation.services'
+import { useQuery } from '@tanstack/react-query'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -20,6 +22,21 @@ function ChatHistory() {
   const [dataUpload, setDataUpload] = useState([])
   const [dataName, setDataName] = useState('')
   const [step, setStep] = useState(1)
+  const [cq, setCq] = useState([])
+
+  const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
+  
+
+  useEffect(() => {
+    if(conversation) {
+      const data = JSON.parse(conversation?.data?.competency_questions)
+      if(data){
+        setStep(2)
+      }
+      setCq(data)
+      setChat([conversation?.data])
+    }
+  }, [conversation])
   
   const handleChange = (e) => {
     setText(e.target.value)
@@ -27,36 +44,36 @@ function ChatHistory() {
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    // send 2 message, before and after the AI response
+    // setLoading(true)
+    // // send 2 message, before and after the AI response
     
-    setText('')
-    const data = {
-      user_input: text,
-      topic_id: id
-    };
-    // prod proposed
-    const msg = await sendMessageAPI(data);
+    // setText('')
+    // const data = {
+    //   user_input: text,
+    //   topic_id: id
+    // };
+    // // prod proposed
+    // const msg = await sendMessageAPI(data);
 
-    setChat(msg.topic.conversation_history)
-    setLoading(false)
+    // setChat(msg.topic.conversation_history)
+    // setLoading(false)
   }
 
-  const getTopicHandler = async (id) => {
-    // setLoadingTopic(true)
-    const dummy = await getMessagesDev()
-    const setDataDummy = dummy.find((item) => item.id === id)
+  // const getTopicHandler = async (id) => {
+  //   // setLoadingTopic(true)
+  //   const dummy = await getMessagesDev()
+  //   const setDataDummy = dummy.find((item) => item.id === id)
 
-    setTopic(dummy)
-    setChat([setDataDummy])
-    // setLoadingTopic(false)  
-  } 
+  //   setTopic(dummy)
+  //   setChat([setDataDummy])
+  //   // setLoadingTopic(false)  
+  // } 
 
-  useEffect(() => {
-    getTopicHandler(id)
-  }, [id])
+  // useEffect(() => {
+  //   getTopicHandler(id)
+  // }, [id])
   return (
-    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep}}>
+    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq}}>
       <LayoutPage>
         
 
@@ -76,7 +93,7 @@ function ChatHistory() {
                   Generate several competency questions with domain and scope specificity. Feel free to adjust the suggestions as needed to align with your specific ontology.
                   </div>
                 </div> 
-                <GridChat setLoading={setLoading}/>
+                {/* <GridChat setLoading={setLoading}/> */}
               </>
               : ''
             }
@@ -91,7 +108,7 @@ function ChatHistory() {
                   Generate competency questions based on the domain and scope you have defined. You can adjust the number of questions and the wording as needed.
                   </div>
                 </div> 
-                <GridChat setLoading={setLoading}/>
+                <GridChat setLoading={isPendingConversation}/>
               </>
               : ''
             }
@@ -106,7 +123,7 @@ function ChatHistory() {
                   Generate competency questions based on the domain and scope you have defined. You can adjust the number of questions and the wording as needed.
                   </div>
                 </div> 
-                <GridChat setLoading={setLoading}/>
+                {/* <GridChat setLoading={setLoading}/> */}
               </>
               : ''
             }

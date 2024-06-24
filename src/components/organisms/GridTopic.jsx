@@ -108,11 +108,11 @@ function GridTopic() {
         </div>
 
         <div className='grid grid-cols-1 px-4 pt-5 text-sm gap-1'>
-          {  (topic !== undefined) ?
-            topic.map((item, index) => {
+          {  (dataTopic !== undefined || !isPendingDataTopic) ?
+            dataTopic?.data.map((item, index) => {
               return (
                 <Topic key={index}>
-                    <Link to={`/chat/${item.id}`} className='w-full'>
+                    <Link to={`/chat/${item.conversation_id}`} className='w-full'>
                       <span>{item.title.length > 25 ? item.title.substring(0,25) + '...' : item.title}</span> 
                     </Link>
                     <div className='group-hover:text-gray-500 text-secondary-bg' onClick={() => handlePopUp(item)}>

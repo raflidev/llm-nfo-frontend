@@ -1,20 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Chat from '../molecules/Chat'
 // import Typewritter from '../atoms/Typewritter'
-import { Scrollbars } from 'react-custom-scrollbars-2';
 import DataChatContext from '../context/DataChatContext';
 import CQs from '../molecules/CQs';
 
 export default function GridChat(props) {
   const { setLoading} = props
-  const { chat, setChat, step, setStep} = useContext(DataChatContext)
+  const { chat, setChat, step, setStep, cq, setCq} = useContext(DataChatContext)
+  console.log(cq.competency_questions);
 
-  const [cq, setCq] = useState([])
 
-
-  useEffect(() => {
-    setCq(chat.map((item) => item?.output?.CQs))
-  }, [chat])
   return (
 
       
@@ -34,14 +29,16 @@ export default function GridChat(props) {
                         {/* {
                           index % 2 === 0 ? item.content : <Typewritter setLoading={setLoading} text={item.content} delay={30} />
                         } */}
-                        {item.input}
+                        {item.prompt}
                       </Chat>
                       
                       <Chat isAi={true}>
                         <div className='space-y-2'>
+
                           {
-                            cq.length > 0 ?
-                            <CQs item={cq[index]} index={index} setValue={setCq}/>
+                            cq.competency_questions.length > 0 ?
+                            <CQs item={cq.competency_questions} index={index} setValue={setCq}/>
+                            // <CQs item={cq[index]} index={index} setValue={setCq}/>
                             :
                             ''
                           }
