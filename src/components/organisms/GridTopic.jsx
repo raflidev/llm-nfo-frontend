@@ -8,18 +8,37 @@ import google from '../../assets/images/google.svg'
 import DataChatContext from '../context/DataChatContext'
 import axios from 'axios'
 import { Slide, toast } from 'react-toastify'
-import { useQuery } from '@tanstack/react-query'
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { getConversationByUserId } from '../../services/conversation.services'
+import { loginAuth } from '../../services/auth.services'
 
 function GridTopic() {  
   const {topic, setTopic} = useContext(DataChatContext)
   const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(false)
   const [loggedIn, setLoggedIn] = useState(null)
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')))
+  const queryClient = new QueryClient()
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
   
-  const {data: dataTopic, isLoading: isLoadingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
-  console.log(dataTopic);
+  const {data: dataTopic, isPending: isPendingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
+
+  const {mutate: mutateLogin, isPending: isPendingLogin} = useMutation({mutationFn: loginAuth, 
+    onSuccess: (response) => {
+      console.log(response);
+        if(response.status === 200) {
+          localStorage.setItem('user', JSON.stringify(response.data))
+          setUser(response.data)
+          toast.success(response.data.message, {
+            transition: Slide
+          })
+          queryClient.invalidateQueries('topic')
+        }else{
+          toast.error(response.data.message, {
+            transition: Slide
+          })
+        }
+    }
+   })
 
   const handlePopUp = (item) => {
     setToggle(true)
@@ -40,25 +59,7 @@ function GridTopic() {
         access_token: tokenResponse.access_token,
         client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID
       }
-      axios.post(process.env.REACT_APP_API_URI+'/login', 
-        data
-      ).then((response) => {
-        console.log(response);
-        if(response.status === 200) {
-          localStorage.setItem('user', JSON.stringify(response.data.data))
-          toast.success(response.data.message, {
-            transition: Slide
-          })
-        }else{
-          toast.error(response.data.message, {
-            transition: Slide
-          })
-        }
-      }).catch((error) => {
-        // toast.error(error.response.data.message, {
-        //   transition: Slide
-        // })
-      })
+      mutateLogin(data)
     },
     onError: (error) => {
       // toast.error(error.message, {
@@ -67,9 +68,15 @@ function GridTopic() {
     }
   });
 
-  useEffect(() => {
-    console.log(user);
-  }, [user])
+  const logoutHandle = () => {
+    toast.success("Berhasil Logout", {
+      transition: Slide
+    })
+    setTimeout(() => {
+      localStorage.clear(); window.location.reload();
+    }, 2000);
+  }
+
 
   return (
     <div className='flex justify-between flex-col h-full'>
@@ -130,14 +137,27 @@ function GridTopic() {
         </div>
       </div>
 
-      <div className=' px-4'>
+      <div className=' px-4 pb-5'>
         {/* <button onClick={() => checkLoginState()}>Google Auth</button> */}
-        <button onClick={() => login()} type="button" className={`w-full block py-2 px-1 md:px-3 text-center border rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
+        {
+          user ? 
+          <div className='flex flex-col gap-2 space-y-2'>
+            <div className='flex space-x-2 items-center'>
+              <img src={user.profile_pic_url} className='w-8 rounded-full' alt="" srcSet="" />
+              <span>{user.name}</span>
+            </div>
+            <button className='bg-red-500 text-white px-2 py-1 rounded text-sm' onClick={() => logoutHandle()}>Logout</button>
+          </div> 
+          
+          : 
+
+          <button onClick={() => login()} type="button" className={`w-full block py-2 px-1 md:px-3 text-center border rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
           <img src={google} alt="" />
           <span>
             Login dengan Google
           </span>
-        </button>
+          </button>
+        }
       </div>
     </div>
   )
