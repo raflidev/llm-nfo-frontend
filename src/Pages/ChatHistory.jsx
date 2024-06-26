@@ -33,7 +33,7 @@ function ChatHistory() {
       if(data){
         setStep(2)
       }
-      setCq(data)
+      setCq(data.competency_questions)
       setChat([conversation?.data])
     }
   }, [conversation])
@@ -44,39 +44,11 @@ function ChatHistory() {
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    // setLoading(true)
-    // // send 2 message, before and after the AI response
-    
-    // setText('')
-    // const data = {
-    //   user_input: text,
-    //   topic_id: id
-    // };
-    // // prod proposed
-    // const msg = await sendMessageAPI(data);
-
-    // setChat(msg.topic.conversation_history)
-    // setLoading(false)
   }
 
-  // const getTopicHandler = async (id) => {
-  //   // setLoadingTopic(true)
-  //   const dummy = await getMessagesDev()
-  //   const setDataDummy = dummy.find((item) => item.id === id)
-
-  //   setTopic(dummy)
-  //   setChat([setDataDummy])
-  //   // setLoadingTopic(false)  
-  // } 
-
-  // useEffect(() => {
-  //   getTopicHandler(id)
-  // }, [id])
   return (
     <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq}}>
       <LayoutPage>
-        
-
         {
           !loadingTopic ? 
           <div>
@@ -137,7 +109,12 @@ function ChatHistory() {
           null
         }
         
-        <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
+        {
+          step === 1 ?
+          <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
+          :
+          ''
+        }
       </LayoutPage>
     </DataChatContext.Provider>
   )

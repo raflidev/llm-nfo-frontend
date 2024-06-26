@@ -1,11 +1,10 @@
 import React from 'react'
-import ButtonTopic from '../atoms/ButtonTopic'
 
 export default function Topic(props) {
-  const { children } = props
+  const { children, isActive } = props
   return (
-    <ButtonTopic>
+    <div className={`rounded py-2 px-4 flex justify-between hover:bg-gray-700 items-center cursor-pointer group ${isActive ? 'bg-gray-700' : ''}`}>
       {children}
-    </ButtonTopic>
+    </div>
   )
 }

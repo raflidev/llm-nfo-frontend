@@ -1,67 +1,120 @@
-import React from 'react'
-import ButtonSend from '../atoms/ButtonSend'
+import { useMutation } from '@tanstack/react-query'
+import React, { useState } from 'react'
+import { saveCQFromConversationID } from '../../services/cq.services'
+import { useParams } from 'react-router-dom'
+import { Slide, toast } from 'react-toastify'
+import ButtonLoading from '../atoms/ButtonLoading'
 
 function CQs(props) {
+  const {id} = useParams()
   const {item, setValue, index} = props
-  // return
+  const [cq, setCQ] = useState(item)
+  const [confirmation, setConfirmation] = useState(false)
+  const [saveItem, setSaveItem] = useState(
+    cq.map((item) => {
+      return false
+    })
+  )
+
+  const {mutate: saveCQs, isPending: isPendingSaveCQs} = useMutation({mutationFn: saveCQFromConversationID,
+    onSuccess: (response) => {
+      console.log(response)
+      toast.success(response.message, {
+        transition: Slide
+      })
+    }
+  })
 
   const changeHandle = (e, indexCQ) => {
-    item[indexCQ] = e.target.value
-    
-    setValue((prev) => {
+    setCQ((prev) => {
       let newItems = [...prev]
-      newItems[index] = item
+      newItems[indexCQ] = e.target.value
       return newItems
     })
   }
 
   const saveCQ = (cq, indexCQ) => {
     console.log('save', cq, indexCQ)
+    // save item by indexCQ
+    setSaveItem((prev) => {
+      let newItems = [...prev]
+      newItems[indexCQ] = true
+      return newItems
+    })
+    console.log(saveItem);
   }
 
   const deleteCQ = (cq, indexCQ) => {
     console.log('delete', cq, indexCQ)
     // delete item by indexCQ
-    item.splice(indexCQ, 1)
-    setValue((prev) => {
+    setCQ((prev) => {
       let newItems = [...prev]
-      newItems[index] = item
+      newItems.splice(indexCQ, 1)
       return newItems
     })
   }
 
   const saveAllCQ = (item) => {
-    const data = item.map((cq,index) => {
-      return `${index+1}. ${cq}`
-    })
-    console.log('save all', {"competency_question": data})
+    const data = {
+      "id": id,
+      "competency_question": cq
+    }
+    console.log(data);
+    saveCQs(data)
+  }
+
+  const resetAllCQ = () => {
+    window.location.reload()
   }
 
   return (
     <>
       <div className='space-y-2'>
-        {item.map((cq, indexCQ) => {
+        {cq.map((cqItem, indexCQ) => {
           return (
             <div key={indexCQ} className='flex space-x-3 items-center'>
-              <textarea className='flex w-full bg-transparent' defaultValue={cq} onChange={(e) => changeHandle(e, indexCQ)} />
-              <div className='flex space-x-1'>
-                <button className='hover:bg-blue-primary p-1 rounded duration-200' onClick={() => saveCQ(cq, indexCQ)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
-                </button>
-                <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQ(cq, indexCQ)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+              {!saveItem[indexCQ] ?
+              <textarea id={`CQ-${indexCQ}`} className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} onChange={(e) => changeHandle(e, indexCQ)} />
+              :
+              <textarea id={`CQ-${indexCQ}`} className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} disabled />
+              }
+                {!saveItem[indexCQ] ? 
+                  <div className='flex space-x-1'>
+                    <button className='hover:bg-blue-primary p-1 rounded duration-200' onClick={() => saveCQ(cqItem, indexCQ)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      </svg>
+                    </button>
+                    <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQ(cqItem, indexCQ)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  :
+                  <div className='bg-green-800  p-1 rounded duration-200'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                  </div>
+                }
             </div>
           )
         })}
       </div>
-      {/* button save */}
-      <button className='py-2 px-3 bg-blue-primary rounded-lg text-sm' onClick={() => saveAllCQ(item)}>Save All</button>
+      {
+        !confirmation ? 
+        <div className='space-x-2 flex justify-end pt-5'>
+          <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
+          <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(item.map((item) => {return true}))}}>Save All</button>
+        </div>
+        :
+        <div className='space-x-2 flex justify-end pt-5'>
+          <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
+          <ButtonLoading onClick={() => saveAllCQ(cq)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading>
+        </div>
+        
+      }
     </>
   )
 }

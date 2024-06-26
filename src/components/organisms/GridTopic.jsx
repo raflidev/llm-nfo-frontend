@@ -1,27 +1,24 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Topic from '../molecules/Topic'
-import { Link } from 'react-router-dom'
-import { deleteTopic } from '../../services/topic.services'
-import { getTopic } from '../../services/message.services'
+import { Link, useParams } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
 import google from '../../assets/images/google.svg'
 import DataChatContext from '../context/DataChatContext'
-import axios from 'axios'
 import { Slide, toast } from 'react-toastify'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
-import { getConversationByUserId } from '../../services/conversation.services'
+import { deleteConversationById, getConversationByUserId } from '../../services/conversation.services'
 import { loginAuth } from '../../services/auth.services'
 
 function GridTopic() {  
+  const {id} = useParams()
   const {topic, setTopic} = useContext(DataChatContext)
   const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(false)
   const [loggedIn, setLoggedIn] = useState(null)
+  const [currentItem, setCurrentItem] = useState({})
   const queryClient = new QueryClient()
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
-  
   const {data: dataTopic, isPending: isPendingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
-
   const {mutate: mutateLogin, isPending: isPendingLogin} = useMutation({mutationFn: loginAuth, 
     onSuccess: (response) => {
       console.log(response);
@@ -38,9 +35,27 @@ function GridTopic() {
           })
         }
     }
-   })
+  })
+
+  const {mutate: mutateDeleteTopic, isPending: isPendingDeleteTopic} = useMutation({mutationFn: deleteConversationById,
+    onSuccess: (response) => {
+      console.log(response);
+      if(response.status === 200) {
+        toast.success(response.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries('topic')
+      }else{
+        toast.error(response.data.message, {
+          transition: Slide
+        })
+      }
+      setToggle(false)
+    }
+  })
 
   const handlePopUp = (item) => {
+    setCurrentItem(item)
     setToggle(true)
   } 
 
@@ -48,9 +63,8 @@ function GridTopic() {
     setToggle(false)
   }
 
-  const handleDeleteTopic = async (id) => {
-    await deleteTopic(id)
-    setToggle(false)
+  const handleDeleteTopic = async () => {
+    mutateDeleteTopic(currentItem.conversation_id)
   }
 
   const login = useGoogleLogin({
@@ -86,10 +100,10 @@ function GridTopic() {
           <div className='p-5'>Delete Chat?</div>
           <hr/>
           <div className=' px-5 py-8 space-y-8'>
-          <p>This will delete <span className='font-bold'>{topic.title}</span></p>
+          <p>This will delete <span className='font-bold'>{currentItem.title}</span></p>
           <div className='flex justify-end gap-2'>
             <button className='border hover:bg-secondary-bg border-gray-500 text-white px-3 py-1 rounded-lg text-sm' onClick={() => cancelPopup()}>Cancel</button>
-            <button className='bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm' onClick={() => handleDeleteTopic(topic._id)}>Delete</button>
+            <button className='bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm' onClick={() => handleDeleteTopic()}>Delete</button>
           </div>
           </div>
         </div>
@@ -107,11 +121,11 @@ function GridTopic() {
           </Link>
         </div>
 
-        <div className='grid grid-cols-1 px-4 pt-5 text-sm gap-1'>
-          {  (dataTopic !== undefined || !isPendingDataTopic) ?
+        <div className='grid grid-cols-1 px-2 pt-5 text-sm gap-3'>
+          {  (dataTopic?.data !== null && !isPendingDataTopic) ?
             dataTopic?.data.map((item, index) => {
               return (
-                <Topic key={index}>
+                <Topic key={index} isActive={item.conversation_id === id}>
                     <Link to={`/chat/${item.conversation_id}`} className='w-full'>
                       <span>{item.title.length > 25 ? item.title.substring(0,25) + '...' : item.title}</span> 
                     </Link>
@@ -122,7 +136,7 @@ function GridTopic() {
                     </div>
                   </Topic>
               )
-            }) : null
+            }) : ''
           }
 
           {/* loading */}
@@ -151,7 +165,7 @@ function GridTopic() {
           
           : 
 
-          <button onClick={() => login()} type="button" className={`w-full block py-2 px-1 md:px-3 text-center border rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
+          <button onClick={() => login()} type="button" className={`w-full py-2 px-1 md:px-3 text-center rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
           <img src={google} alt="" />
           <span>
             Login dengan Google
