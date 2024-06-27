@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
+import InputText from '../atoms/InputText';
 
 function UploadPopUp(props) {
   const { toggle, setToggle, data, setData, setDataName } = props
+
+  const [domain, setDomain] = useState('')
+  const [scope, setScope] = useState('')
+  const [isFile, setIsFile] = useState(true)
+  const [url, setUrl] = useState('')
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -11,7 +17,7 @@ function UploadPopUp(props) {
   const handleUpload = (e) => {
     setData(e.target.files[0])
     setDataName(e.target.files[0].name)
-    setToggle(!toggle)
+    // setToggle(!toggle)
   }
   return (
 
@@ -22,17 +28,50 @@ function UploadPopUp(props) {
         <form onSubmit={submitHandler} encType='multipart/form-data' className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
-              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                 <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
                   Upload File
                 </h3>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-primary-bg hover:text-primary-bg">
-                      <span>Upload a file</span>
-                      <input id="file-upload" name="file-upload" onChange={(e) => handleUpload(e)} type="file" className="sr-only" />
+                <div className="mt-2 space-y-2">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                      Domain
                     </label>
-                  </p>
+                    <InputText type='text' name='name' text={domain} setText={setDomain} disabled={true} />
+                  </div>
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                      Scope
+                    </label>
+                    <InputText type='text' name='name' text={scope} setText={setScope} disabled={true} />
+                  </div>
+                  <div className="space-y-2">
+                    <div className='text-primary-bg font-medium text-sm'>You can choose</div>
+                    <div className='text-black space-x-2 text-sm'>
+                      <button className={`${isFile ? 'underline decoration-blue-400' : ''} decoration-2 underline-offset-2  hover:underline py-1 rounded-md`} onClick={() => setIsFile(true)}>Upload File</button>
+                      <span>or</span>
+                      <button className={`${!isFile ? 'underline decoration-blue-400' : ''} decoration-2 underline-offset-2 hover:underline py-1 rounded-md`} onClick={() => setIsFile(false)}>URL page</button>
+                    </div>
+                  </div>
+                  {
+                    !isFile ? 
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                        URL
+                      </label>
+                      <InputText type='text' name='name' text={url} setText={setUrl} />
+                    </div>
+                    :
+                    <div className="text-sm text-gray-500 flex">
+                      <label htmlFor="file-upload" className="w-2/6  border-black py-1 px-2 border-l border-y cursor-pointer bg-white rounded-l-md font-medium text-primary-bg hover:text-primary-bg">
+                        <span>Upload a file</span>
+                        <input id="file-upload" name="file-upload" onChange={(e) => handleUpload(e)} type="file" className="sr-only" />
+                      </label>
+                      <div className='w-4/6 px-2 py-1 block border rounded-r-md  border-black overflow-hidden duration-200 text-black'>
+                      {data.name}
+                      </div>
+                    </div>
+                  }
                 </div>
               </div>
             </div>

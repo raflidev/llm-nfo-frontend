@@ -74,9 +74,9 @@ function CQs(props) {
           return (
             <div key={indexCQ} className='flex space-x-3 items-center'>
               {!saveItem[indexCQ] ?
-              <textarea id={`CQ-${indexCQ}`} className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} onChange={(e) => changeHandle(e, indexCQ)} />
+              <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} onChange={(e) => changeHandle(e, indexCQ)} />
               :
-              <textarea id={`CQ-${indexCQ}`} className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} disabled />
+              <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} disabled />
               }
                 {!saveItem[indexCQ] ? 
                   <div className='flex space-x-1'>

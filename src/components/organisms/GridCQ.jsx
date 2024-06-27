@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
+import DataChatContext from '../context/DataChatContext'
+import CQs from '../molecules/CQs'
 import Chat from '../molecules/Chat'
-// import Typewritter from '../atoms/Typewritter'
-import DataChatContext from '../context/DataChatContext';
-import CQs from '../molecules/CQs';
 
-export default function GridChat(props) {
+function GridCQ(props) {
   const { setLoading } = props
   const { chat, setChat, step, setStep, cq, setCq} = useContext(DataChatContext)
 
@@ -20,20 +19,11 @@ export default function GridChat(props) {
                 
                 <Chat isAi={true}>
                   <div className='space-y-2 mb-10'>
-                    {/* {
+                    {
                       cq !== undefined && cq.length > 0 ?
                       <CQs item={cq} index={index} setValue={setCq}/>
                       :
                       ''
-                    } */}
-
-                    {
-                      cq.map(item => {
-                        return (
-                          <div>{item}</div>
-                        )
-                      
-                      })
                     }
                   </div>
                 </Chat>
@@ -44,3 +34,5 @@ export default function GridChat(props) {
     </div>
   )
 }
+
+export default GridCQ

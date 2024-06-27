@@ -9,6 +9,7 @@ import UploadPopUp from '../components/organisms/UploadPopUp'
 import StepByStep from '../components/organisms/StepByStep'
 import { getConversationById } from '../services/conversation.services'
 import { useQuery } from '@tanstack/react-query'
+import GridCQ from '../components/organisms/GridCQ'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -62,10 +63,10 @@ function ChatHistory() {
                   <div className='text-sm'>STEP {step}</div>
                   <div className='font-semibold text-3xl'>Domain and scope</div>
                   <div className='font-light'>
-                  Generate several competency questions with domain and scope specificity. Feel free to adjust the suggestions as needed to align with your specific ontology.
+                  Generate several competency questions with domain and scope specificity. You can adjusting the competency questions at STEP 2.
                   </div>
                 </div> 
-                {/* <GridChat setLoading={setLoading}/> */}
+                <GridChat setLoading={isPendingConversation}/>
               </>
               : ''
             }
@@ -75,12 +76,12 @@ function ChatHistory() {
               <>
                 <div className='py-6'>
                   <div className='text-sm'>STEP {step}</div>
-                  <div className='font-semibold text-3xl'>Question Generation</div>
+                  <div className='font-semibold text-3xl'>Validate Question Generation</div>
                   <div className='font-light'>
-                  Generate competency questions based on the domain and scope you have defined. You can adjust the number of questions and the wording as needed.
+                  Generate several competency questions with domain and scope specificity. Feel free to adjust the suggestions as needed to align with your specific ontology.
                   </div>
                 </div> 
-                <GridChat setLoading={isPendingConversation}/>
+                <GridCQ setLoading={isPendingConversation}/>
               </>
               : ''
             }
@@ -110,7 +111,7 @@ function ChatHistory() {
         }
         
         {
-          step === 1 ?
+          step === 2 ?
           <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
           :
           ''

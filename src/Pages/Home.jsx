@@ -61,7 +61,7 @@ function Home() {
           toggleUpload ? <UploadPopUp toggle={toggleUpload} setToggle={setToggleUpload} data={dataUpload} setData={setDataUpload} setDataName={setDataName} /> : ''
         }
 
-        <div className='w-full'>
+        {/* <div className='w-full'>
           <div className='flex justify-center'>
             <div className='flex w-full md:w-1/2'>
               {
@@ -80,7 +80,7 @@ function Home() {
               }
             </div>
           </div>
-        </div>
+        </div> */}
         <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
       </LayoutPage>
     </DataChatContext.Provider>
