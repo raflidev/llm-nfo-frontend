@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { saveCQFromConversationID } from '../../services/cq.services'
 import { useParams } from 'react-router-dom'
 import { Slide, toast } from 'react-toastify'
 import ButtonLoading from '../atoms/ButtonLoading'
+import DataChatContext from '../context/DataChatContext'
 
 function CQs(props) {
+  const {setStep} = useContext(DataChatContext)
   const {id} = useParams()
   const {item, setValue, index} = props
   const [cq, setCQ] = useState(item)
@@ -19,9 +21,12 @@ function CQs(props) {
   const {mutate: saveCQs, isPending: isPendingSaveCQs} = useMutation({mutationFn: saveCQFromConversationID,
     onSuccess: (response) => {
       console.log(response)
-      toast.success(response.message, {
-        transition: Slide
-      })
+      if(response.status === 200){
+        toast.success(response.message, {
+          transition: Slide
+        })
+        setStep(3)
+      }
     }
   })
 
@@ -34,18 +39,15 @@ function CQs(props) {
   }
 
   const saveCQ = (cq, indexCQ) => {
-    console.log('save', cq, indexCQ)
     // save item by indexCQ
     setSaveItem((prev) => {
       let newItems = [...prev]
       newItems[indexCQ] = true
       return newItems
     })
-    console.log(saveItem);
   }
 
   const deleteCQ = (cq, indexCQ) => {
-    console.log('delete', cq, indexCQ)
     // delete item by indexCQ
     setCQ((prev) => {
       let newItems = [...prev]
@@ -59,7 +61,6 @@ function CQs(props) {
       "id": id,
       "competency_question": cq
     }
-    console.log(data);
     saveCQs(data)
   }
 

@@ -1,23 +1,46 @@
 import React, { useState } from 'react'
 import InputText from '../atoms/InputText';
+import { useMutation } from '@tanstack/react-query';
+import { postImportantTempURL } from '../../services/importantTemp.services';
+import ButtonLoading from '../atoms/ButtonLoading';
+import { useParams } from 'react-router-dom';
 
 function UploadPopUp(props) {
   const { toggle, setToggle, data, setData, setDataName } = props
-
+  const {id} = useParams()
   const [domain, setDomain] = useState('')
   const [scope, setScope] = useState('')
   const [isFile, setIsFile] = useState(true)
   const [url, setUrl] = useState('')
 
-  const submitHandler = (e) => {
+  const {mutate: uploadFileURL, isPending: isPendingUploadFile} = useMutation({
+    mutationFn: postImportantTempURL,
+    onSuccess: (response) => {
+      console.log(response);
+      if(response.status === 200) {
+        // setToggle(!toggle)
+        console.log(JSON.parse(response.data.data.llm_output));
+      }
+    }
+  })
+
+  const submitHandler = (e, type) => {
     e.preventDefault()
-    console.log(e);
+
+    if(type === 'url') {
+      const data = {
+        conversation_id: id,
+        url: url
+      }
+      console.log(data);
+      uploadFileURL(data)
+    }
+    
   }
 
   const handleUpload = (e) => {
     setData(e.target.files[0])
     setDataName(e.target.files[0].name)
-    // setToggle(!toggle)
   }
   return (
 
@@ -48,9 +71,9 @@ function UploadPopUp(props) {
                   <div className="space-y-2">
                     <div className='text-primary-bg font-medium text-sm'>You can choose</div>
                     <div className='text-black space-x-2 text-sm'>
-                      <button className={`${isFile ? 'underline decoration-blue-400' : ''} decoration-2 underline-offset-2  hover:underline py-1 rounded-md`} onClick={() => setIsFile(true)}>Upload File</button>
+                      <button className={`${isFile ? 'underline decoration-blue-400' : ''} decoration-2 underline-offset-2  hover:underline py-1 rounded-md`} onClick={() => {setIsFile(true); setUrl('') }}>Upload File</button>
                       <span>or</span>
-                      <button className={`${!isFile ? 'underline decoration-blue-400' : ''} decoration-2 underline-offset-2 hover:underline py-1 rounded-md`} onClick={() => setIsFile(false)}>URL page</button>
+                      <button className={`${!isFile ? 'underline decoration-blue-400' : ''} decoration-2 underline-offset-2 hover:underline py-1 rounded-md`} onClick={() => {setIsFile(false); setDataName(''); setData('') }}>URL page</button>
                     </div>
                   </div>
                   {
@@ -77,13 +100,26 @@ function UploadPopUp(props) {
             </div>
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
+            {
+              !isPendingUploadFile ?
+              <button
+                type="button"
+                onClick={() => setToggle(!toggle)}
+                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-bg text-base font-medium text-white hover:bg-primary-bg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-bg sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Close
+              </button>
+              :
+              ''
+            }
+            {/* <button
               type="button"
               onClick={() => setToggle(!toggle)}
-              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-bg text-base font-medium text-white hover:bg-primary-bg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-bg sm:ml-3 sm:w-auto sm:text-sm"
+              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-primary text-base font-medium text-white hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-bg sm:ml-3 sm:w-auto sm:text-sm"
             >
-              Close
-            </button>
+              Submit
+            </button> */}
+            <ButtonLoading type='submit' onClick={(e) => submitHandler(e, url ? 'url' : 'pdf' )} isLoading={isPendingUploadFile}>Submit</ButtonLoading>
           </div>
         </form>
       </div>

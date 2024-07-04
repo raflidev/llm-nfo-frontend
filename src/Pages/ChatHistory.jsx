@@ -111,7 +111,7 @@ function ChatHistory() {
         }
         
         {
-          step === 2 ?
+          step === 2 || step === 3 ?
           <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
           :
           ''
