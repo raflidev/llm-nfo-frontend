@@ -5,12 +5,14 @@ import { useParams } from 'react-router-dom'
 import { Slide, toast } from 'react-toastify'
 import ButtonLoading from '../atoms/ButtonLoading'
 import DataChatContext from '../context/DataChatContext'
+import IconPlus from '../atoms/Icon/IconPlus'
 
 function CQs(props) {
   const {setStep} = useContext(DataChatContext)
   const {id} = useParams()
   const {item, setValue, index} = props
   const [cq, setCQ] = useState(item)
+  
   const [confirmation, setConfirmation] = useState(false)
   const [saveItem, setSaveItem] = useState(
     cq.map((item) => {
@@ -61,11 +63,26 @@ function CQs(props) {
       "id": id,
       "competency_question": cq
     }
+
+    console.log(cq,saveItem);
     saveCQs(data)
   }
 
   const resetAllCQ = () => {
     window.location.reload()
+  }
+
+  const addItemHandler = () => {
+    setCQ((prev) => {
+      let newItems = [...prev]
+      newItems.push('')
+      return newItems
+    })
+    setSaveItem((prev) => {
+      let newItems = [...prev]
+      newItems.push(false)
+      return newItems
+    })
   }
 
   return (
@@ -103,11 +120,17 @@ function CQs(props) {
           )
         })}
       </div>
+      <div className='pt-3'>
+        <button onClick={() => addItemHandler()} className='py-1 px-3 bg-green-600 hover:bg-green-900 rounded-lg text-sm duration-300 flex space-x-1 item-center'>
+          <IconPlus/>
+          <span>Add Item</span>
+        </button>
+      </div>
       {
         !confirmation ? 
         <div className='space-x-2 flex justify-end pt-5'>
           <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
-          <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(item.map((item) => {return true}))}}>Save All</button>
+          <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(cq.map((cq) => {return true}))}}>Save All</button>
         </div>
         :
         <div className='space-x-2 flex justify-end pt-5'>

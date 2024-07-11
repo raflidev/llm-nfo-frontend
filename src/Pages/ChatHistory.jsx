@@ -10,6 +10,7 @@ import StepByStep from '../components/organisms/StepByStep'
 import { getConversationById } from '../services/conversation.services'
 import { useQuery } from '@tanstack/react-query'
 import GridCQ from '../components/organisms/GridCQ'
+import { getConversationCQs } from '../services/cq.services'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -26,18 +27,23 @@ function ChatHistory() {
   const [cq, setCq] = useState([])
 
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
-  
-
+  const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
+  console.log(conversation);
   useEffect(() => {
     if(conversation) {
       const data = JSON.parse(conversation?.data?.competency_questions)
       if(data){
         setStep(2)
       }
-      setCq(data.competency_questions)
+      if(validCQ?.data.length > 0) {
+        const data = validCQ?.data.filter((item) => item.is_valid).map((item) => item.question)
+        setCq(data)
+      }else{
+        setCq(data.competency_questions)
+      }
       setChat([conversation?.data])
     }
-  }, [conversation])
+  }, [conversation, isPendingValidCQ, id])
   
   const handleChange = (e) => {
     setText(e.target.value)

@@ -2,11 +2,9 @@ import React, { useContext } from 'react'
 import DataChatContext from '../context/DataChatContext'
 import CQs from '../molecules/CQs'
 import Chat from '../molecules/Chat'
-
 function GridCQ(props) {
   const { setLoading } = props
   const { chat, setChat, step, setStep, cq, setCq} = useContext(DataChatContext)
-
   return (
     <div className='grid grid-cols-1 gap-8'>
         {
@@ -23,7 +21,7 @@ function GridCQ(props) {
                       cq !== undefined && cq.length > 0 ?
                       <CQs item={cq} index={index} setValue={setCq}/>
                       :
-                      ''
+                      <div>a</div>
                     }
                   </div>
                 </Chat>

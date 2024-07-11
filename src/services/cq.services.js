@@ -8,3 +8,12 @@ export const saveCQFromConversationID = async (data) => {
     return response.data
   })
 }
+
+export const getConversationCQs = async (id) => {
+  return axios.get(`${process.env.REACT_APP_API_URI}/conversation/competency_questions/${id}`, {
+    withCredentials: true
+  })
+  .then((response) => {
+    return response.data
+  })
+}

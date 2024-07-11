@@ -125,7 +125,7 @@ function GridTopic() {
           {  (dataTopic?.data !== null && !isPendingDataTopic) ?
             dataTopic?.data.map((item, index) => {
               return (
-              <Link to={`/chat/${item.conversation_id}`} className='w-full'>
+              <Link to={`/chat/${item.conversation_id}`} key={index} className='w-full'>
                 <Topic key={index} isActive={item.conversation_id === id}>
                     <span>{item.title.length > 25 ? item.title.substring(0,25) + '...' : item.title}</span> 
                     <div className='group-hover:text-gray-500 text-secondary-bg' onClick={() => handlePopUp(item)}>
