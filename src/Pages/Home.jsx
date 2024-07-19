@@ -81,7 +81,7 @@ function Home() {
             </div>
           </div>
         </div> */}
-        <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
+        <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={isPendingMessageMutate} toggle={toggleUpload} setToggle={setToggleUpload} />
       </LayoutPage>
     </DataChatContext.Provider>
   )
