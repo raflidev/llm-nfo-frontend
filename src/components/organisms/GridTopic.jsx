@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Topic from '../molecules/Topic'
 import { Link, useParams } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
 import google from '../../assets/images/google.svg'
-import DataChatContext from '../context/DataChatContext'
+// import DataChatContext from '../context/DataChatContext'
 import { Slide, toast } from 'react-toastify'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { deleteConversationById, getConversationByUserId } from '../../services/conversation.services'
@@ -11,14 +11,14 @@ import { loginAuth } from '../../services/auth.services'
 
 function GridTopic() {  
   const {id} = useParams()
-  const {topic, setTopic} = useContext(DataChatContext)
+  // const {topic, setTopic} = useContext(DataChatContext)
   const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(null)
   const [currentItem, setCurrentItem] = useState({})
   const queryClient = new QueryClient()
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
   const {data: dataTopic, isPending: isPendingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
+
   const {mutate: mutateLogin, isPending: isPendingLogin} = useMutation({mutationFn: loginAuth, 
     onSuccess: (response) => {
       console.log(response);

@@ -1,40 +1,45 @@
-import { QueryClient, useMutation } from '@tanstack/react-query'
-import React, { useContext, useState } from 'react'
-import { saveCQFromConversationID } from '../../services/cq.services'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Slide, toast } from 'react-toastify'
-import ButtonLoading from '../atoms/ButtonLoading'
-import DataChatContext from '../context/DataChatContext'
+import { getImportantTempByConvID } from '../../services/importantTemp.services'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import IconPlus from '../atoms/Icon/IconPlus'
+import ButtonLoading from '../atoms/ButtonLoading'
 
-function CQs(props) {
-  const {setStep, setCq: setCQContext} = useContext(DataChatContext)
+function ImportantTerm() {
   const {id} = useParams()
-  const {item, setValue, index} = props
-  const [cq, setCQ] = useState(item)
+  const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
   
+  const [termItem, setTermItem] = useState([])
   const [confirmation, setConfirmation] = useState(false)
   const [saveItem, setSaveItem] = useState(
-    cq.map((item) => {
+    termItem?.map((item) => {
       return false
     })
   )
 
-  const {mutate: saveCQs, isPending: isPendingSaveCQs} = useMutation({mutationFn: saveCQFromConversationID,
-    onSuccess: (response) => {
-      console.log(response)
-      if(response.status === 200){
-        toast.success(response.message, {
-          transition: Slide
-        })
-        setCQContext(cq)
-        setStep(3)
-      }
+  useEffect(() => {
+    if(importantTerm){
+        const Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
+        setTermItem(Term?.terms.slice(1, -1).split(","))
     }
-  })
+  },[importantTerm])
+//   return
+
+//   const {mutate: saveCQs, isPending: isPendingSaveCQs} = useMutation({mutationFn: saveCQFromConversationID,
+//     onSuccess: (response) => {
+//       console.log(response)
+//       if(response.status === 200){
+//         toast.success(response.message, {
+//           transition: Slide
+//         })
+//         setTermItemContext(cq)
+//         setStep(3)
+//       }
+//     }
+//   })
 
   const changeHandle = (e, indexCQ) => {
-    setCQ((prev) => {
+    setTermItem((prev) => {
       let newItems = [...prev]
       newItems[indexCQ] = e.target.value
       return newItems
@@ -52,21 +57,21 @@ function CQs(props) {
 
   const deleteCQ = (cq, indexCQ) => {
     // delete item by indexCQ
-    setCQ((prev) => {
+    setTermItem((prev) => {
       let newItems = [...prev]
       newItems.splice(indexCQ, 1)
       return newItems
     })
   }
 
-  const saveAllCQ = (item) => {
+  const saveAllItem = (item) => {
     const data = {
       "id": id,
-      "competency_question": cq
+      "competency_question": termItem
     }
 
-    console.log(cq,saveItem);
-    saveCQs(data)
+    console.log(termItem,saveItem);
+    // saveCQs(data)
   }
 
   const resetAllCQ = () => {
@@ -74,7 +79,7 @@ function CQs(props) {
   }
 
   const addItemHandler = () => {
-    setCQ((prev) => {
+    setTermItem((prev) => {
       let newItems = [...prev]
       newItems.push('')
       return newItems
@@ -89,7 +94,7 @@ function CQs(props) {
   return (
     <>
       <div className='space-y-2'>
-        {cq.map((cqItem, indexCQ) => {
+        {termItem.map((cqItem, indexCQ) => {
           return (
             <div key={indexCQ} className='flex space-x-3 items-center'>
               {!saveItem[indexCQ] ?
@@ -131,12 +136,13 @@ function CQs(props) {
         !confirmation ? 
         <div className='space-x-2 flex justify-end pt-5'>
           <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
-          <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(cq.map((cq) => {return true}))}}>Save All</button>
+          <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(termItem.map((cq) => {return true}))}}>Save All</button>
         </div>
         :
         <div className='space-x-2 flex justify-end pt-5'>
           <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
-          <ButtonLoading onClick={() => saveAllCQ(cq)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading>
+          {/* <ButtonLoading onClick={() => saveAllItem(termItem)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading> */}
+          <ButtonLoading onClick={() => saveAllItem(termItem)} type='button'>Are you sure?</ButtonLoading>
         </div>
         
       }
@@ -144,4 +150,4 @@ function CQs(props) {
   )
 }
 
-export default CQs
+export default ImportantTerm

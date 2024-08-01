@@ -3,7 +3,7 @@ import GridChat from '../components/organisms/GridChat'
 import LayoutPage from '../components/templates/LayoutPage'
 import InputBottom from '../components/organisms/InputBottom'
 import { devPrompt, sendMessage, sendMessageAPI, getTopic, getTopicById, getMessagesDev } from '../services/message.services'
-import { useParams } from 'react-router-dom'
+import { json, useParams } from 'react-router-dom'
 import DataChatContext from '../components/context/DataChatContext'
 import UploadPopUp from '../components/organisms/UploadPopUp'
 import StepByStep from '../components/organisms/StepByStep'
@@ -11,6 +11,8 @@ import { getConversationById } from '../services/conversation.services'
 import { useQuery } from '@tanstack/react-query'
 import GridCQ from '../components/organisms/GridCQ'
 import { getConversationCQs } from '../services/cq.services'
+import ImportantTerm from '../components/organisms/ImportantTerm'
+import { getImportantTempByConvID } from '../services/importantTemp.services'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -28,16 +30,18 @@ function ChatHistory() {
 
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
-  console.log(conversation);
+  const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
+  console.log(importantTerm);
   useEffect(() => {
     if(conversation) {
       const data = JSON.parse(conversation?.data?.competency_questions)
       if(data){
-        setStep(2)
+        importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)
       }
       if(validCQ?.data.length > 0) {
         const data = validCQ?.data.filter((item) => item.is_valid).map((item) => item.question)
-        setCq(data)
+        // HARDCODED 
+        setCq(data[0].slice(1,-1).split(","))
       }else{
         setCq(data.competency_questions)
       }
@@ -102,6 +106,7 @@ function ChatHistory() {
                   Generate competency questions based on the domain and scope you have defined. You can adjust the number of questions and the wording as needed.
                   </div>
                 </div> 
+                <ImportantTerm/>
                 {/* <GridChat setLoading={setLoading}/> */}
               </>
               : ''

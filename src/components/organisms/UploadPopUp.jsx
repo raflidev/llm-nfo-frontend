@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import InputText from '../atoms/InputText';
 import { useMutation } from '@tanstack/react-query';
-import { postImportantTempURL } from '../../services/importantTemp.services';
+import { postImportantTempPDF, postImportantTempURL } from '../../services/importantTemp.services';
 import ButtonLoading from '../atoms/ButtonLoading';
 import { useParams } from 'react-router-dom';
+import { Slide, toast } from 'react-toastify';
 
 function UploadPopUp(props) {
   const { toggle, setToggle, data, setData, setDataName } = props
@@ -13,12 +14,25 @@ function UploadPopUp(props) {
   const [isFile, setIsFile] = useState(true)
   const [url, setUrl] = useState('')
 
-  const {mutate: uploadFileURL, isPending: isPendingUploadFile} = useMutation({
+  const {mutate: uploadFileURL, isPending: isPendingUploadFileURL} = useMutation({
     mutationFn: postImportantTempURL,
     onSuccess: (response) => {
       console.log(response);
       if(response.status === 200) {
-        // setToggle(!toggle)
+        setToggle(!toggle)
+        toast.success(response.data.message, {
+          transition: Slide 
+        })
+        console.log(JSON.parse(response.data.data.llm_output));
+      }
+    }
+  })
+  const {mutate: uploadFilePDF, isPending: isPendingUploadFilePDF} = useMutation({
+    mutationFn: postImportantTempPDF,
+    onSuccess: (response) => {
+      console.log(response);
+      if(response.status === 200) {
+        setToggle(!toggle)
         console.log(JSON.parse(response.data.data.llm_output));
       }
     }
@@ -34,6 +48,14 @@ function UploadPopUp(props) {
       }
       console.log(data);
       uploadFileURL(data)
+    }
+    
+    if(type === 'pdf') {
+      const upload = {
+        file: data,
+        conversation_id: id,
+      }
+      uploadFilePDF(upload)
     }
     
   }
@@ -101,7 +123,7 @@ function UploadPopUp(props) {
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             {
-              !isPendingUploadFile ?
+              !isPendingUploadFileURL ?
               <button
                 type="button"
                 onClick={() => setToggle(!toggle)}
@@ -119,7 +141,7 @@ function UploadPopUp(props) {
             >
               Submit
             </button> */}
-            <ButtonLoading type='submit' onClick={(e) => submitHandler(e, url ? 'url' : 'pdf' )} isLoading={isPendingUploadFile}>Submit</ButtonLoading>
+            <ButtonLoading type='submit' onClick={(e) => submitHandler(e, url ? 'url' : 'pdf' )} isLoading={isPendingUploadFileURL || isPendingUploadFilePDF}>Submit</ButtonLoading>
           </div>
         </form>
       </div>
