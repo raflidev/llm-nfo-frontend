@@ -103,7 +103,7 @@ function ChatHistory() {
                   <div className='text-sm'>STEP {step}</div>
                   <div className='font-semibold text-3xl'>Enumerate Important Terms</div>
                   <div className='font-light'>
-                  Generate competency questions based on the domain and scope you have defined. You can adjust the number of questions and the wording as needed.
+                  Generate a list of important terms with domain and scope specificity. Users can upload a PDF or provide a URL based on the chosen domain and scope. Feel free to adjust the suggestions as needed to align with your specific ontology.
                   </div>
                 </div> 
                 <ImportantTerm/>
@@ -121,12 +121,12 @@ function ChatHistory() {
           null
         }
         
-        {
-          step === 2 || step === 3 ?
+        {/* {
+          step === 2 ?
           <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
           :
           ''
-        }
+        } */}
       </LayoutPage>
     </DataChatContext.Provider>
   )

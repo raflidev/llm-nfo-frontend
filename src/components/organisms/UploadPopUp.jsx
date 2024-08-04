@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import InputText from '../atoms/InputText';
-import { useMutation } from '@tanstack/react-query';
+import { QueryClient, useMutation } from '@tanstack/react-query';
 import { postImportantTempPDF, postImportantTempURL } from '../../services/importantTemp.services';
 import ButtonLoading from '../atoms/ButtonLoading';
 import { useParams } from 'react-router-dom';
@@ -13,17 +13,19 @@ function UploadPopUp(props) {
   const [scope, setScope] = useState('')
   const [isFile, setIsFile] = useState(true)
   const [url, setUrl] = useState('')
+  const queryClient = new QueryClient()
 
   const {mutate: uploadFileURL, isPending: isPendingUploadFileURL} = useMutation({
     mutationFn: postImportantTempURL,
     onSuccess: (response) => {
       console.log(response);
       if(response.status === 200) {
-        setToggle(!toggle)
         toast.success(response.data.message, {
           transition: Slide 
         })
-        console.log(JSON.parse(response.data.data.llm_output));
+        queryClient.invalidateQueries({queryKey: ['important_term', id]})
+        setToggle(!toggle)
+        window.location.reload();
       }
     }
   })
@@ -32,8 +34,12 @@ function UploadPopUp(props) {
     onSuccess: (response) => {
       console.log(response);
       if(response.status === 200) {
+        toast.success(response.data.message, {
+          transition: Slide 
+        })
+        queryClient.invalidateQueries({queryKey: ['important_term', id]})
         setToggle(!toggle)
-        console.log(JSON.parse(response.data.data.llm_output));
+        window.location.reload();
       }
     }
   })

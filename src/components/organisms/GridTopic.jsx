@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Topic from '../molecules/Topic'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
 import google from '../../assets/images/google.svg'
 // import DataChatContext from '../context/DataChatContext'
@@ -18,6 +18,7 @@ function GridTopic() {
   const queryClient = new QueryClient()
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
   const {data: dataTopic, isPending: isPendingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
+  const navigate = useNavigate()
 
   const {mutate: mutateLogin, isPending: isPendingLogin} = useMutation({mutationFn: loginAuth, 
     onSuccess: (response) => {
@@ -28,7 +29,7 @@ function GridTopic() {
           toast.success(response.data.message, {
             transition: Slide
           })
-          queryClient.invalidateQueries('topic')
+          queryClient.invalidateQueries({queryKey: ['topic']})
         }else{
           toast.error(response.data.message, {
             transition: Slide
@@ -44,12 +45,13 @@ function GridTopic() {
         toast.success(response.message, {
           transition: Slide
         })
-        queryClient.invalidateQueries('topic')
+        queryClient.invalidateQueries({queryKey: ['topic']})
       }else{
         toast.error(response.data.message, {
           transition: Slide
         })
       }
+      navigate('/')
       setToggle(false)
     }
   })
@@ -121,7 +123,7 @@ function GridTopic() {
           </Link>
         </div>
 
-        <div className='grid grid-cols-1 px-2 pt-5 text-sm gap-3 overflow-y-auto h-[75vh]'>
+        <div className='grid grid-cols-1 px-2 pt-5 text-sm gap-3 overflow-y-auto'>
           {  (dataTopic?.data !== null && !isPendingDataTopic) ?
             dataTopic?.data.map((item, index) => {
               return (
