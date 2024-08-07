@@ -8,15 +8,17 @@ import UploadPopUp from './UploadPopUp'
 import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
 
-function ImportantTerm() {
+function ValidationData(props) {
+  const {data} = props
   const {id} = useParams()
-  const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
-  console.log(importantTerm);
+
+//   console.log(data);
+//   return
   
   const {setStep} = useContext(DataChatContext)
   const queryClient = new QueryClient()
   
-  const [termItem, setTermItem] = useState([])
+  const [termItem, setTermItem] = useState(data)
   const [confirmation, setConfirmation] = useState(false)
   const [toggle, setToggle] = useState(false)
   const [dataUpload, setDataUpload] = useState([])
@@ -26,13 +28,6 @@ function ImportantTerm() {
       return false
     })
   )
-
-  useEffect(() => {
-    if(importantTerm?.data.data.length > 0) {
-        const Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
-        setTermItem(Term?.terms.slice(1, -1).split(","))
-    }
-  },[importantTerm])
 
   const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
     onSuccess: (response) => {
@@ -105,7 +100,7 @@ function ImportantTerm() {
         toggle ? <UploadPopUp toggle={toggle} setToggle={setToggle} data={dataUpload} setData={setDataUpload} setDataName={setDataName} /> : ''
       }
       {
-        importantTerm?.data.data.length > 0 ?
+        termItem.length > 0 ?
         <>
           <div className='space-y-2'>
             {termItem.map((cqItem, indexCQ) => {
@@ -175,4 +170,4 @@ function ImportantTerm() {
   )
 }
 
-export default ImportantTerm
+export default ValidationData

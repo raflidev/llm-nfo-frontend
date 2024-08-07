@@ -34,3 +34,12 @@ export const getImportantTempByConvID = async (id) => {
     return error
   }
 }
+
+export const postSaveImportantTempByConvID = async (data) => {
+  try {
+    const response = await axios.post(`${process.env.REACT_APP_API_URI}/generation/terms/${data.id}`, data)
+    return response
+  } catch (error) {
+    return error
+  }
+}

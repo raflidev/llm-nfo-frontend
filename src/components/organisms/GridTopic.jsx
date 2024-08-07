@@ -18,6 +18,7 @@ function GridTopic() {
   const queryClient = new QueryClient()
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
   const {data: dataTopic, isPending: isPendingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
+  
   const navigate = useNavigate()
 
   const {mutate: mutateLogin, isPending: isPendingLogin} = useMutation({mutationFn: loginAuth, 

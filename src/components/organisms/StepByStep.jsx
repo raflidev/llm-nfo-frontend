@@ -11,7 +11,7 @@ export default function StepByStep() {
       {
         [1,2,3,4,5,6,7].map((item, index) => {
           return(
-            <div className='flex w-full justify-between' key={index}>
+            <div className='flex w-full space-x-2' key={index}>
               {location.pathname === '/' ?
                 <button onClick={() => setStep(index+1)} disabled className={' rounded-full h-12 w-12 inline-block content-center duration-200 ' + `${index+1 <= step ? 'bg-blue-primary hover:bg-gray-700' : 'bg-gray-50 hover:bg-gray-500 text-black hover:text-white'}`}>
                   <div className="flex justify-center">
@@ -37,7 +37,10 @@ export default function StepByStep() {
                 <div className='w-3/6 content-center'>
                   {
                     index+1 <= step ?
-                    <div className='bg-blue-primary h-2 rounded-full'></div>
+                    index === 3 ?
+                      <div className='bg-yellow-400 h-2 rounded-full'></div>
+                    :
+                      <div className='bg-blue-primary h-2 rounded-full'></div>
                     :
                     <div className='bg-gray-50 h-2 rounded-full'></div>
                   }
