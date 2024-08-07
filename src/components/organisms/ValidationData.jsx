@@ -9,7 +9,7 @@ import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
 
 function ValidationData(props) {
-  const {data} = props
+  const {data, saveFunction, setItem, isLoading} = props
   const {id} = useParams()
 
 //   console.log(data);
@@ -44,7 +44,7 @@ function ValidationData(props) {
   const changeHandle = (e, indexCQ) => {
     setTermItem((prev) => {
       let newItems = [...prev]
-      newItems[indexCQ] = e.target.value
+      newItems[indexCQ][0] = e.target.value
       return newItems
     })
   }
@@ -62,19 +62,18 @@ function ValidationData(props) {
     // delete item by indexCQ
     setTermItem((prev) => {
       let newItems = [...prev]
+      console.log(newItems);
+      
       newItems.splice(indexCQ, 1)
       return newItems
     })
   }
 
-  const saveAllItem = (item) => {
+  const saveAllItem = () => {
     const data = {
-      "id": id,
-      "terms": termItem
+      "item": termItem
     }
-
-    console.log(data);
-    saveItemFunc(data)
+    setItem(data)
   }
 
   const resetAllCQ = () => {
@@ -107,9 +106,9 @@ function ValidationData(props) {
               return (
                 <div key={indexCQ} className='flex space-x-3 items-center'>
                   {!saveItem[indexCQ] ?
-                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} onChange={(e) => changeHandle(e, indexCQ)} />
+                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={cqItem[0]} onChange={(e) => changeHandle(e, indexCQ)} />
                   :
-                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} disabled />
+                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={cqItem[0]} disabled />
                   }
                     {!saveItem[indexCQ] ? 
                       <div className='flex space-x-1'>
@@ -152,7 +151,7 @@ function ValidationData(props) {
             <div className='space-x-2 flex justify-end pt-5'>
               <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
               {/* <ButtonLoading onClick={() => saveAllItem(termItem)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading> */}
-              <ButtonLoading isLoading={isPendingSaveItem} onClick={() => saveAllItem(termItem)} type='button'>Are you sure?</ButtonLoading>
+              <ButtonLoading isLoading={isLoading} onClick={() => saveAllItem(termItem)} type='button'>Are you sure?</ButtonLoading>
             </div>
           }
         </>

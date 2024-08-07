@@ -1,29 +1,57 @@
 import React, { useEffect, useState } from 'react'
 import ValidationData from '../components/organisms/ValidationData'
-import { useQuery } from '@tanstack/react-query'
-import { getImportantTempByConvID } from '../services/importantTemp.services'
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import { getdataPropertyByConvID } from '../services/dataProperty.services'
-import { getClassesByConvID } from '../services/classes.services'
+import { getClassesByConvID, putSaveClassesByClassesID } from '../services/classes.services'
 import { getObjectPropertiesByConvID } from '../services/objectProperty.services'
+import { Slide, toast } from 'react-toastify'
+import DataClassesContext from '../components/context/DataClassesContext'
 
 function Step5ValidationPage() {
   const {id} = useParams()
   const [termDP, setTermDP] = useState([])
   const [termOP, setTermOP] = useState([])
   const [termClasses, setTermClasses] = useState([])
+  const [itemClasses, setItemClasses] = useState([])
   const [menu, setMenu] = useState(['Validate Classes', 'Data Property', 'Object Property'])
   const [menuActive, setMenuActive] = useState(0)
   const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
   const {data: dataProperty, isPending: isPendingDataProperty} = useQuery({queryKey: ['data_property', id], queryFn: () => getdataPropertyByConvID("16d105cd-9e28-4422-b5f8-77830b6237d7")})
   const {data: objectProperty, isPending: isPendingObjectProperty} = useQuery({queryKey: ['object_property', id], queryFn: () => getObjectPropertiesByConvID("16d105cd-9e28-4422-b5f8-77830b6237d7")})
+  const queryClient = new QueryClient()
+
   console.log("classes:", classes);
   console.log("data properties:", dataProperty);
   console.log("object properties:", objectProperty);
+
+  const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: putSaveClassesByClassesID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['classes', id]})
+        // setStep(4)
+      }
+    }
+  })
+
+  const saveClasses = (item) => {
+    item.item.map((item) => {
+      const data = {
+        "id": item[1],
+        "class": item[0]
+      }
+      mutateSaveClasses(data)
+    })
+    
+  }
   useEffect(() => {
     if(classes?.data.data.length > 0) {
         const Class = classes?.data.data
-        setTermClasses(Class.map((item) => item.name))
+        // setTermClasses({'name': Class.map((item) => item.name), 'class_id': Class.map((item) => item.class_id)})
+        setTermClasses( Class.map((item) => [item.name, item.class_id]))
         
     }
   },[classes, dataProperty, objectProperty])
@@ -48,7 +76,7 @@ function Step5ValidationPage() {
           menuActive === 0 && termClasses.length > 0 ?
           <>
             <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
-            <ValidationData data={termClasses}/>
+            <ValidationData data={termClasses} setItem={saveClasses} saveFunction={mutateSaveClasses} isLoading={isPendingSaveItem}/>
           </>
           :
           ''
