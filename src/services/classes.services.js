@@ -17,3 +17,12 @@ export const putSaveClassesByClassesID = async (data) => {
     return error
   }
 }
+
+export const getClassesAndDataPropertiesByConvID = async (id) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_API_URI}/generation/classes-and-properties/${id}`)
+    return response
+  } catch (error) {
+    return error
+  }
+}
