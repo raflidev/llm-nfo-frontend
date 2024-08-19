@@ -29,6 +29,8 @@ function ValidationData(props) {
     })
   )
 
+  console.log(termItem);
+
   const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
     onSuccess: (response) => {
       if(response.status === 200){
@@ -83,7 +85,7 @@ function ValidationData(props) {
   const addItemHandler = () => {
     setTermItem((prev) => {
       let newItems = [...prev]
-      newItems.push('')
+      newItems.push(['', ''])
       return newItems
     })
     setSaveItem((prev) => {

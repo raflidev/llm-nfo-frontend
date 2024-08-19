@@ -8,11 +8,8 @@ import DataChatContext from '../components/context/DataChatContext'
 
 function Step4ValidationPage() {
   const {id} = useParams()
-  const {setStep} = useContext(DataChatContext)
+  const {setStep, termClasses, setTermClasses} = useContext(DataChatContext)
   const queryClient = new QueryClient()
-  const [termClasses, setTermClasses] = useState([])
-  const [itemClasses, setItemClasses] = useState([])
-  const {data: classes, isPending: isPendingClasses, refetch} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
 
 
 
@@ -38,16 +35,6 @@ function Step4ValidationPage() {
     })
     
   }
-  useEffect(() => {
-    refetch()
-    if(classes?.data.data.length > 0) {
-        const Class = classes?.data.data
-        // setTermClasses({'name': Class.map((item) => item.name), 'class_id': Class.map((item) => item.class_id)})
-        setTermClasses( Class.map((item) => [item.name, item.class_id]))
-    }
-
-   
-  },[classes])
 
   return (
     <div>

@@ -12,6 +12,7 @@ import ImportantTerm from '../components/organisms/ImportantTerm'
 import Step5ValidationPage from './Step5ValidationPage'
 import Step4ValidationPage from './Step4ValidationPage'
 import { getImportantTempByConvID } from '../services/importantTemp.services'
+import { getClassesAndDataPropertiesByConvID, getClassesByConvID } from '../services/classes.services'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -27,22 +28,39 @@ function ChatHistory() {
   const [step, setStep] = useState(1)
   const [cq, setCq] = useState([])
   const [iTerm, setITerm] = useState([])
+  const [termClasses, setTermClasses] = useState([])
+  const [termDP, setTermDP] = useState([])
+  const [termOP, setTermOP] = useState([])
 
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
-  const {data: importantTerm, isPending: isPendingImportantTerm, refetch} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
+  const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
+  const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
+  const {data: classAndDataProperty, isPending: isPendingClassAndDataProperty} = useQuery({queryKey: ['class_and_data_property', id], queryFn: () => getClassesAndDataPropertiesByConvID(id)})
 
   useEffect(() => {
     if(conversation) {
       const data = JSON.parse(conversation?.data?.competency_questions)
-      setITerm([])
       var Term = null
       if(importantTerm?.data.data.length > 0) {
         Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
-        
         setITerm(Term?.terms.slice(1, -1).split(","))
-        
       }
+      if(classes?.data.data.length > 0) {
+        const Class = classes?.data.data
+        setTermClasses( Class.map((item) => [item.name, item.class_id]))
+      }
+      if(classAndDataProperty?.data.data.length > 0) {
+        const DataProperty = classAndDataProperty?.data.data
+        // console.log("Data Property:", DataProperty);  
+        
+        setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => item.data_property_name, item.data_property_id)]))
+    }
+
+    if(classAndDataProperty?.data.data.length > 0) {
+        const ObjectProperty = classAndDataProperty?.data.data
+        setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => item.object_property_name, item.object_property_id)]))
+    }
       if(data){
         importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)
       }
@@ -55,11 +73,11 @@ function ChatHistory() {
       }
       setChat([conversation?.data])
     }
-  }, [conversation, isPendingValidCQ, id, importantTerm])
+  }, [conversation, isPendingValidCQ, id, importantTerm, classes, classAndDataProperty])
 
 
   return (
-    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq, iTerm, setITerm}}>
+    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq, iTerm, setITerm, termClasses, setTermClasses, termOP, setTermOP, termDP, setTermDP}}>
       <LayoutPage>
         {
           !loadingTopic ? 
