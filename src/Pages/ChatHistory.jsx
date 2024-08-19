@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import GridChat from '../components/organisms/GridChat'
 import LayoutPage from '../components/templates/LayoutPage'
-import InputBottom from '../components/organisms/InputBottom'
-import { devPrompt, sendMessage, sendMessageAPI, getTopic, getTopicById, getMessagesDev } from '../services/message.services'
-import { json, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import DataChatContext from '../components/context/DataChatContext'
 import UploadPopUp from '../components/organisms/UploadPopUp'
 import StepByStep from '../components/organisms/StepByStep'
@@ -12,9 +9,9 @@ import { useQuery } from '@tanstack/react-query'
 import GridCQ from '../components/organisms/GridCQ'
 import { getConversationCQs } from '../services/cq.services'
 import ImportantTerm from '../components/organisms/ImportantTerm'
-import { getImportantTempByConvID } from '../services/importantTemp.services'
 import Step5ValidationPage from './Step5ValidationPage'
 import Step4ValidationPage from './Step4ValidationPage'
+import { getImportantTempByConvID } from '../services/importantTemp.services'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -29,14 +26,23 @@ function ChatHistory() {
   const [dataName, setDataName] = useState('')
   const [step, setStep] = useState(1)
   const [cq, setCq] = useState([])
+  const [iTerm, setITerm] = useState([])
 
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
-  const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
+  const {data: importantTerm, isPending: isPendingImportantTerm, refetch} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
 
   useEffect(() => {
     if(conversation) {
       const data = JSON.parse(conversation?.data?.competency_questions)
+      setITerm([])
+      var Term = null
+      if(importantTerm?.data.data.length > 0) {
+        Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
+        
+        setITerm(Term?.terms.slice(1, -1).split(","))
+        
+      }
       if(data){
         importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)
       }
@@ -49,18 +55,11 @@ function ChatHistory() {
       }
       setChat([conversation?.data])
     }
-  }, [conversation, isPendingValidCQ, id])
-  
-  const handleChange = (e) => {
-    setText(e.target.value)
-  }
+  }, [conversation, isPendingValidCQ, id, importantTerm])
 
-  const submitHandler = async (e) => {
-    e.preventDefault()
-  }
 
   return (
-    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq}}>
+    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq, iTerm, setITerm}}>
       <LayoutPage>
         {
           !loadingTopic ? 
@@ -148,6 +147,38 @@ function ChatHistory() {
               ''
             }
 
+            {
+              step === 6 ? 
+              <>
+                <div className='py-6'>
+                  <div className='text-sm'>STEP {step}</div>
+                  <div className='font-semibold text-3xl'>Validate Facet of the properties</div>
+                  <div className='font-light'>
+                    Ensure the accuracy and consistency of property attributes within a specific domain, aligning them with established standards.
+                  </div>
+                </div>
+
+                <Step5ValidationPage/>
+              </>
+              :
+              ''
+            }
+
+            {
+              step === 7 ? 
+              <>
+                <div className='py-6'>
+                  <div className='text-sm'>STEP {step}</div>
+                  <div className='font-semibold text-3xl'>Create Instances Class</div>
+                  <div className='font-light'>
+                    Create class instances based on defined attributes, then validate them using competency questions to ensure alignment with the domain’s goals
+                  </div>
+                </div>
+              </>
+              :
+              ''
+            }
+
 
             {
               toggleUpload ? <UploadPopUp toggle={toggleUpload} setToggle={setToggleUpload} data={dataUpload} setData={setDataUpload} setDataName={setDataName} /> : ''
@@ -157,12 +188,6 @@ function ChatHistory() {
           null
         }
         
-        {/* {
-          step === 2 ?
-          <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={loading} toggle={toggleUpload} setToggle={setToggleUpload} />
-          :
-          ''
-        } */}
       </LayoutPage>
     </DataChatContext.Provider>
   )

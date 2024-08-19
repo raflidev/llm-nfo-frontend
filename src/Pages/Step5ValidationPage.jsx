@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import ValidationData from '../components/organisms/ValidationData'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import { getdataPropertyByConvID } from '../services/dataProperty.services'
 import { getClassesAndDataPropertiesByConvID, getClassesByConvID, putSaveClassesByClassesID } from '../services/classes.services'
 import { getObjectPropertiesByConvID } from '../services/objectProperty.services'
 import { Slide, toast } from 'react-toastify'
-import DataClassesContext from '../components/context/DataClassesContext'
 import ValidationDataOnClass from '../components/organisms/ValidationDataOnClass'
 
 function Step5ValidationPage() {
   const {id} = useParams()
+  const queryClient = new QueryClient()
   const [termDP, setTermDP] = useState([])
   const [termOP, setTermOP] = useState([])
-  const [termClasses, setTermClasses] = useState([])
-  const [itemClasses, setItemClasses] = useState([])
   const [itemDP, setItemDP] = useState([])
-  const [menu, setMenu] = useState(['Validate Classes', 'Data Property', 'Object Property'])
+  const [menu, setMenu] = useState(['Data Property', 'Object Property'])
   const [menuActive, setMenuActive] = useState(0)
-  const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
-  const queryClient = new QueryClient()
   const {data: classAndDataProperty, isPending: isPendingClassAndDataProperty} = useQuery({queryKey: ['class_and_data_property', id], queryFn: () => getClassesAndDataPropertiesByConvID(id)})
 
   // console.log("class_and_data_property:", classAndDataProperty);
@@ -27,36 +22,9 @@ function Step5ValidationPage() {
   // console.log("data properties:", dataProperty);
   // console.log("object properties:", objectProperty);
 
-  const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: putSaveClassesByClassesID,
-    onSuccess: (response) => {
-      if(response.status === 200){
-        toast.success(response.data.message, {
-          transition: Slide
-        })
-        queryClient.invalidateQueries({queryKey: ['classes', id]})
-        setMenuActive(menuActive+1)
-        // setStep(4)
-      }
-    }
-  })
 
-  const saveClasses = (item) => {
-    item.item.map((item) => {
-      const data = {
-        "id": item[1],
-        "class": item[0]
-      }
-      mutateSaveClasses(data)
-    })
-    
-  }
   useEffect(() => {
-    if(classes?.data.data.length > 0) {
-        const Class = classes?.data.data
-        // setTermClasses({'name': Class.map((item) => item.name), 'class_id': Class.map((item) => item.class_id)})
-        setTermClasses( Class.map((item) => [item.name, item.class_id]))
-    }
-
+    queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
     if(classAndDataProperty?.data.data.length > 0) {
         const DataProperty = classAndDataProperty?.data.data
         console.log("Data Property:", DataProperty);  
@@ -69,7 +37,7 @@ function Step5ValidationPage() {
         setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => item.object_property_name, item.object_property_id)]))
     }
 
-  },[classes, classAndDataProperty])
+  },[classAndDataProperty])
 
   return (
     <div>
@@ -88,17 +56,7 @@ function Step5ValidationPage() {
     </div>
 
         {
-          menuActive === 0 && termClasses.length > 0 ?
-          <>
-            <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
-            <ValidationData data={termClasses} setItem={saveClasses} saveFunction={mutateSaveClasses} isLoading={isPendingSaveItem}/>
-          </>
-          :
-          ''
-        }
-
-        {
-          menuActive === 1 && termDP.length > 0 ?
+          menuActive === 0 && termDP.length > 0 ?
           <>
             <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
             <ValidationDataOnClass data={termDP}/>
@@ -108,7 +66,7 @@ function Step5ValidationPage() {
         }
 
         {
-          menuActive === 2 && termOP.length > 0 ?
+          menuActive === 1 && termOP.length > 0 ?
           <>
             <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
             <ValidationDataOnClass data={termOP}/>

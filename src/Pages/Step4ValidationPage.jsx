@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ValidationData from '../components/organisms/ValidationData'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import { getClassesByConvID, putSaveClassesByClassesID } from '../services/classes.services'
 import { Slide, toast } from 'react-toastify'
+import DataChatContext from '../components/context/DataChatContext'
 
 function Step4ValidationPage() {
   const {id} = useParams()
-  const [termDP, setTermDP] = useState([])
-  const [termOP, setTermOP] = useState([])
+  const {setStep} = useContext(DataChatContext)
+  const queryClient = new QueryClient()
   const [termClasses, setTermClasses] = useState([])
   const [itemClasses, setItemClasses] = useState([])
-  const [itemDP, setItemDP] = useState([])
-  const [menu, setMenu] = useState(['Validate Classes', 'Data Property', 'Object Property'])
-  const [menuActive, setMenuActive] = useState(0)
-  const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
-  const queryClient = new QueryClient()
+  const {data: classes, isPending: isPendingClasses, refetch} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
+
+
 
   const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: putSaveClassesByClassesID,
     onSuccess: (response) => {
@@ -23,9 +22,7 @@ function Step4ValidationPage() {
         toast.success(response.data.message, {
           transition: Slide
         })
-        queryClient.invalidateQueries({queryKey: ['classes', id]})
-        setMenuActive(menuActive+1)
-        // setStep(4)
+        queryClient.invalidateQueries({queryKey: ['classes']})
       }
     }
   })
@@ -37,10 +34,12 @@ function Step4ValidationPage() {
         "class": item[0]
       }
       mutateSaveClasses(data)
+      setStep(5)
     })
     
   }
   useEffect(() => {
+    refetch()
     if(classes?.data.data.length > 0) {
         const Class = classes?.data.data
         // setTermClasses({'name': Class.map((item) => item.name), 'class_id': Class.map((item) => item.class_id)})

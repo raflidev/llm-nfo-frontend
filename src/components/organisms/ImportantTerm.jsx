@@ -10,29 +10,32 @@ import DataChatContext from '../context/DataChatContext'
 
 function ImportantTerm() {
   const {id} = useParams()
-  const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
-  console.log(importantTerm);
   
-  const {setStep} = useContext(DataChatContext)
+  const {setStep, iTerm, setITerm} = useContext(DataChatContext)
   const queryClient = new QueryClient()
+
+  // const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
   
-  const [termItem, setTermItem] = useState([])
+  const [termItem, setTermItem] = useState(iTerm)
   const [confirmation, setConfirmation] = useState(false)
   const [toggle, setToggle] = useState(false)
   const [dataUpload, setDataUpload] = useState([])
   const [dataName, setDataName] = useState('')
   const [saveItem, setSaveItem] = useState(
-    termItem?.map((item) => {
+    iTerm?.map((item) => {
       return false
     })
   )
+  
 
-  useEffect(() => {
-    if(importantTerm?.data.data.length > 0) {
-        const Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
-        setTermItem(Term?.terms.slice(1, -1).split(","))
-    }
-  },[importantTerm])
+  // useEffect(() => {
+  //     if(importantTerm?.data.data.length > 0) {
+  //       const Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
+        
+  //       setITerm(Term?.terms.slice(1, -1).split(","))
+  //     }
+  // }, [])
+
 
   const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
     onSuccess: (response) => {
@@ -47,7 +50,7 @@ function ImportantTerm() {
   })
 
   const changeHandle = (e, indexCQ) => {
-    setTermItem((prev) => {
+    setITerm((prev) => {
       let newItems = [...prev]
       newItems[indexCQ] = e.target.value
       return newItems
@@ -65,7 +68,7 @@ function ImportantTerm() {
 
   const deleteCQ = (cq, indexCQ) => {
     // delete item by indexCQ
-    setTermItem((prev) => {
+    setITerm((prev) => {
       let newItems = [...prev]
       newItems.splice(indexCQ, 1)
       return newItems
@@ -75,7 +78,7 @@ function ImportantTerm() {
   const saveAllItem = (item) => {
     const data = {
       "id": id,
-      "terms": termItem
+      "terms": iTerm
     }
 
     console.log(data);
@@ -87,7 +90,7 @@ function ImportantTerm() {
   }
 
   const addItemHandler = () => {
-    setTermItem((prev) => {
+    setITerm((prev) => {
       let newItems = [...prev]
       newItems.push('')
       return newItems
@@ -105,10 +108,10 @@ function ImportantTerm() {
         toggle ? <UploadPopUp toggle={toggle} setToggle={setToggle} data={dataUpload} setData={setDataUpload} setDataName={setDataName} /> : ''
       }
       {
-        importantTerm?.data.data.length > 0 ?
+        iTerm ?
         <>
           <div className='space-y-2'>
-            {termItem.map((cqItem, indexCQ) => {
+            {iTerm.map((cqItem, indexCQ) => {
               return (
                 <div key={indexCQ} className='flex space-x-3 items-center'>
                   {!saveItem[indexCQ] ?
@@ -151,13 +154,13 @@ function ImportantTerm() {
             !confirmation ? 
             <div className='space-x-2 flex justify-end pt-5'>
               <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
-              <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(termItem.map((cq) => {return true}))}}>Save All</button>
+              <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(iTerm.map((cq) => {return true}))}}>Save All</button>
             </div>
             :
             <div className='space-x-2 flex justify-end pt-5'>
               <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
-              {/* <ButtonLoading onClick={() => saveAllItem(termItem)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading> */}
-              <ButtonLoading isLoading={isPendingSaveItem} onClick={() => saveAllItem(termItem)} type='button'>Are you sure?</ButtonLoading>
+              {/* <ButtonLoading onClick={() => saveAllItem(iTerm)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading> */}
+              <ButtonLoading isLoading={isPendingSaveItem} onClick={() => saveAllItem(iTerm)} type='button'>Are you sure?</ButtonLoading>
             </div>
           }
         </>
