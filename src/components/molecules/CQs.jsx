@@ -28,7 +28,7 @@ function CQs(props) {
           transition: Slide
         })
         setCQContext(cq)
-        setStep(3)
+        setStep(2)
       }
     }
   })

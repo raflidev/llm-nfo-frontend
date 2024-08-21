@@ -13,6 +13,7 @@ import Step5ValidationPage from './Step5ValidationPage'
 import Step4ValidationPage from './Step4ValidationPage'
 import { getImportantTempByConvID } from '../services/importantTemp.services'
 import { getClassesAndDataPropertiesByConvID, getClassesByConvID } from '../services/classes.services'
+import Step6ValidationPage from './Step6ValidationPage'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -31,6 +32,8 @@ function ChatHistory() {
   const [termClasses, setTermClasses] = useState([])
   const [termDP, setTermDP] = useState([])
   const [termOP, setTermOP] = useState([])
+  const [facetOP, setFacetOP] = useState([])
+  const [facetDP, setFacetDP] = useState([])
 
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
@@ -55,15 +58,17 @@ function ChatHistory() {
         // console.log("Data Property:", DataProperty);  
         
         setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => item.data_property_name, item.data_property_id)]))
+        setFacetDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_type, item.data_property_id])]))
     }
 
     if(classAndDataProperty?.data.data.length > 0) {
         const ObjectProperty = classAndDataProperty?.data.data
         setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => item.object_property_name, item.object_property_id)]))
+        setFacetOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => item.object_property_name, item.object_property_id)]))
     }
-      if(data){
-        importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)
-      }
+      // if(data){
+      //   importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)
+      // }
       if(validCQ?.data.length > 0) {
         const data = validCQ?.data.filter((item) => item.is_valid).map((item) => item.question)
         // HARDCODED 
@@ -77,7 +82,8 @@ function ChatHistory() {
 
 
   return (
-    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq, iTerm, setITerm, termClasses, setTermClasses, termOP, setTermOP, termDP, setTermDP}}>
+    <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq, iTerm, setITerm, termClasses, 
+                              setTermClasses, termOP, setTermOP, termDP, setTermDP, facetDP, setFacetDP, facetOP, setFacetOP}}>
       <LayoutPage>
         {
           !loadingTopic ? 
@@ -176,7 +182,7 @@ function ChatHistory() {
                   </div>
                 </div>
 
-                <Step5ValidationPage/>
+                <Step6ValidationPage/>
               </>
               :
               ''

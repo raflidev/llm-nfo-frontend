@@ -108,7 +108,7 @@ function ImportantTerm() {
         toggle ? <UploadPopUp toggle={toggle} setToggle={setToggle} data={dataUpload} setData={setDataUpload} setDataName={setDataName} /> : ''
       }
       {
-        iTerm ?
+        iTerm.length > 0 ?
         <>
           <div className='space-y-2'>
             {iTerm.map((cqItem, indexCQ) => {

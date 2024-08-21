@@ -25,7 +25,7 @@ function UploadPopUp(props) {
         })
         queryClient.invalidateQueries({queryKey: ['important_term', id]})
         setToggle(!toggle)
-        window.location.reload();
+        // window.location.reload();
       }
     }
   })
@@ -47,12 +47,14 @@ function UploadPopUp(props) {
   const submitHandler = (e, type) => {
     e.preventDefault()
 
+    console.log(data);
+    
+
     if(type === 'url') {
       const data = {
         conversation_id: id,
         url: url
       }
-      console.log(data);
       uploadFileURL(data)
     }
     
@@ -128,26 +130,19 @@ function UploadPopUp(props) {
             </div>
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <ButtonLoading type='submit' onClick={(e) => submitHandler(e, url ? 'url' : 'pdf' )} isLoading={isPendingUploadFileURL || isPendingUploadFilePDF}>Submit</ButtonLoading>
             {
               !isPendingUploadFileURL ?
               <button
                 type="button"
                 onClick={() => setToggle(!toggle)}
-                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-bg text-base font-medium text-white hover:bg-primary-bg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-bg sm:ml-3 sm:w-auto sm:text-sm"
+                className="w-full block justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-bg text-base font-medium text-white hover:bg-primary-bg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-bg sm:mr-3 sm:w-auto sm:text-sm"
               >
                 Close
               </button>
               :
               ''
             }
-            {/* <button
-              type="button"
-              onClick={() => setToggle(!toggle)}
-              className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-primary text-base font-medium text-white hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-bg sm:ml-3 sm:w-auto sm:text-sm"
-            >
-              Submit
-            </button> */}
-            <ButtonLoading type='submit' onClick={(e) => submitHandler(e, url ? 'url' : 'pdf' )} isLoading={isPendingUploadFileURL || isPendingUploadFilePDF}>Submit</ButtonLoading>
           </div>
         </form>
       </div>
