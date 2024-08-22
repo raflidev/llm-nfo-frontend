@@ -8,8 +8,10 @@ import { Slide, toast } from 'react-toastify'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { deleteConversationById, getConversationByUserId } from '../../services/conversation.services'
 import { loginAuth } from '../../services/auth.services'
+import IconClose from '../atoms/Icon/IconClose'
 
-function GridTopic() {  
+function GridTopic(props) {
+  const {setToggleMenu, toggleMenu} = props
   const {id} = useParams()
   // const {topic, setTopic} = useContext(DataChatContext)
   const [toggle, setToggle] = useState(false)
@@ -96,7 +98,7 @@ function GridTopic() {
 
 
   return (
-    <div className='flex justify-between flex-col h-full'>
+    <div className='flex justify-between flex-col min-h-screen'>
       {/* delete alert in center of screen with blur */}
       <div className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center transition-all duration-100 ease-in-out z-20 ${toggle ? '!opacity-100' : 'opacity-0 invisible'}`}>
         <div className='bg-primary-bg rounded-lg w-[50vh]'>
@@ -113,6 +115,11 @@ function GridTopic() {
       </div>
 
       <div>
+        <div className='flex md:hidden justify-end px-6 pt-4' onClick={() => setToggleMenu(!toggleMenu)}>
+          <div className='bg-red-700 rounded'>
+            <IconClose/>
+          </div>
+        </div>
         <div className='grid grid-cols-1 px-4 pt-5 text-sm gap-4'>
           <Link to={`/`}>
             <Topic>
