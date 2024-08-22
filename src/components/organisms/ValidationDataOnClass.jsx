@@ -8,8 +8,9 @@ import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
 
 function ValidationDataOnClass(props) {
-  const {data} = props
-  const {id} = useParams()
+  const {data, saveFunction} = props
+  
+  const {id } = useParams()
   
   const {setStep} = useContext(DataChatContext)
   const queryClient = new QueryClient()
@@ -23,6 +24,7 @@ function ValidationDataOnClass(props) {
       })
     })
   )
+  
   
   // const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
   //   onSuccess: (response) => {
@@ -39,7 +41,7 @@ function ValidationDataOnClass(props) {
   const changeHandle = (e, indexCQ, index) => {
     setTermItem((prev) => {
       let newItems = [...prev]
-      newItems[indexCQ][1][index] = e.target.value
+      newItems[indexCQ][1][index][0] = e.target.value
       return newItems
     })
   }
@@ -64,8 +66,10 @@ function ValidationDataOnClass(props) {
 
   const saveAllItem = () => {
     const data = {
+      // "id": 
       "item": termItem
     }
+    saveFunction(data)
     // setItem(data)
   }
 
@@ -76,7 +80,7 @@ function ValidationDataOnClass(props) {
   const addItemHandler = (index) => {
     setTermItem((prev) => {
       let newItems = [...prev]
-      newItems[index][1].push('')
+      newItems[index][1].push(['', ''])
       return newItems
     })
 
@@ -106,9 +110,9 @@ function ValidationDataOnClass(props) {
                         return (
                           <div key={index} className='flex space-x-3 items-center'>
                             {!saveItem[indexCQ][index] ?
-                              <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={item} onChange={(e) => changeHandle(e, indexCQ, index)} />
+                              <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={item[0]} onChange={(e) => changeHandle(e, indexCQ, index)} />
                             :
-                              <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={item} disabled />
+                              <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={item[0]} disabled />
                             }
                             {!saveItem[indexCQ][index] ? 
                               <div className='flex space-x-1'>

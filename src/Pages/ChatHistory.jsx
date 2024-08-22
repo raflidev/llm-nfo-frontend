@@ -57,14 +57,14 @@ function ChatHistory() {
         const DataProperty = classAndDataProperty?.data.data
         // console.log("Data Property:", DataProperty);  
         
-        setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => item.data_property_name, item.data_property_id)]))
+        setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_id, item.data_property_type]), item.class_id]))
         setFacetDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_type, item.data_property_id])]))
     }
 
     if(classAndDataProperty?.data.data.length > 0) {
         const ObjectProperty = classAndDataProperty?.data.data
-        setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => item.object_property_name, item.object_property_id)]))
-        setFacetOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => item.object_property_name, item.object_property_id)]))
+        setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id]), item.class_id]))
+        setFacetOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id])]))
     }
       // if(data){
       //   importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)

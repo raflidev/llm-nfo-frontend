@@ -1,13 +1,86 @@
 import React, { useContext, useState } from 'react'
 import ValidationDataOnClass from '../components/organisms/ValidationDataOnClass'
 import DataChatContext from '../components/context/DataChatContext'
+import { postSavedataPropertyByConvID } from '../services/dataProperty.services'
+import { useParams } from 'react-router-dom'
+import { Slide, toast } from 'react-toastify'
+import { QueryClient, useMutation } from '@tanstack/react-query'
+import { postSaveObjectPropertiesByConvID } from '../services/objectProperty.services'
 
 function Step5ValidationPage() {
   
   const [menu, setMenu] = useState(['Data Property', 'Object Property'])
   const [menuActive, setMenuActive] = useState(0)
+  const {id} = useParams()
 
   const {termDP, termOP} = useContext(DataChatContext)
+  const queryClient = new QueryClient()
+  
+
+  const {mutate: saveItemFuncDP, isPending: isPendingSaveItemDP} = useMutation({mutationFn: postSavedataPropertyByConvID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+        // setStep(4)
+      }
+    }
+  })
+  const {mutate: saveItemFuncOP, isPending: isPendingSaveItemOP} = useMutation({mutationFn: postSaveObjectPropertiesByConvID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+        // setStep(4)
+      }
+    }
+  })
+
+  const saveTermDP = (data) => {
+    
+    data.item.map((item) => {
+      var temp =  {
+        "id": item[2],
+        "data_properties": 
+          item[1].map((item2) => {
+            return {
+              "data_property_id": item2[1],
+              "data_property_name": item2[0],
+              "data_property_type": item2[2]
+            }
+          })
+        }
+        console.log(temp);
+        
+      // saveItemFuncDP(temp)
+      })
+    
+  }
+  
+  const saveTermOP = (data) => {
+    data.item.map((item) => {
+      var temp =  {
+        "id": item[2],
+        "object_properties": 
+          item[1].map((item2) => {
+            return {
+              "object_property_id": item2[1],
+              "object_property_name": item2[0],
+            }
+          })
+        }
+
+        console.log(temp);
+        
+        
+      saveItemFuncOP(temp)
+      
+      })
+  }
 
   return (
     <div>
@@ -27,7 +100,7 @@ function Step5ValidationPage() {
         menuActive === 0 ?
         <>
           <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
-          <ValidationDataOnClass data={termDP}/>
+          <ValidationDataOnClass data={termDP} saveFunction={saveTermDP}/>
         </>
         :
         ''
@@ -36,7 +109,7 @@ function Step5ValidationPage() {
         menuActive === 1 ?
         <>
           <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
-          <ValidationDataOnClass data={termOP}/>
+          <ValidationDataOnClass data={termOP} saveFunction={saveTermOP}/>
         </>
         :
         ''

@@ -11,9 +11,13 @@ export const getObjectPropertiesByConvID = async (id) => {
 
 export const postSaveObjectPropertiesByConvID = async (data) => {
   try {
-    const response = await axios.put(`${process.env.REACT_APP_API_URI}/generation/object-properties/${data.id}`, data)
+    const response = await axios.post(`${process.env.REACT_APP_API_URI}/generation/object-properties/${data.id}`, data)
     return response
   } catch (error) {
+    console.log(error);
+    
     return error
   }
 }
+
+// https://ontology-api.hidayattaufiqur.dev/generation/object-properties/:class_id
