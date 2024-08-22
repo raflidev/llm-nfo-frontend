@@ -25,18 +25,6 @@ function ValidationDataOnClass(props) {
     })
   )
   
-  
-  // const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
-  //   onSuccess: (response) => {
-  //     if(response.status === 200){
-  //       toast.success(response.data.message, {
-  //         transition: Slide
-  //       })
-  //       queryClient.invalidateQueries({queryKey: ['important_term', id]})
-  //       setStep(4)
-  //     }
-  //   }
-  // })
 
   const changeHandle = (e, indexCQ, index) => {
     setTermItem((prev) => {
@@ -154,11 +142,16 @@ function ValidationDataOnClass(props) {
             !confirmation ? 
             <div className='space-x-2 flex justify-end pt-5'>
               <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
-              <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(termItem?.map((item) => {
-      return item.map((item2) => {
-        return true
-      })
-    }))}}>Save All</button>
+              <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {
+                setConfirmation(!confirmation);
+                setSaveItem(termItem?.map((item) => {
+                  return item[1].map((item2) => {
+                    return true
+                  })
+                })
+              )}}>
+              Save All
+              </button>
             </div>
             :
             <div className='space-x-2 flex justify-end pt-5'>

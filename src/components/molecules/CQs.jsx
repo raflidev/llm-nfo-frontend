@@ -22,7 +22,6 @@ function CQs(props) {
 
   const {mutate: saveCQs, isPending: isPendingSaveCQs} = useMutation({mutationFn: saveCQFromConversationID,
     onSuccess: (response) => {
-      console.log(response)
       if(response.status === 200){
         toast.success(response.message, {
           transition: Slide
@@ -65,7 +64,6 @@ function CQs(props) {
       "competency_question": cq
     }
 
-    console.log(cq,saveItem);
     saveCQs(data)
   }
 

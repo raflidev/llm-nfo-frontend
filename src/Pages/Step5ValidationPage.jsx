@@ -13,7 +13,7 @@ function Step5ValidationPage() {
   const [menuActive, setMenuActive] = useState(0)
   const {id} = useParams()
 
-  const {termDP, termOP} = useContext(DataChatContext)
+  const {termDP, termOP, setStep} = useContext(DataChatContext)
   const queryClient = new QueryClient()
   
 
@@ -54,9 +54,10 @@ function Step5ValidationPage() {
             }
           })
         }
-        console.log(temp);
+        // console.log(temp);
         
-      // saveItemFuncDP(temp)
+      saveItemFuncDP(temp)
+      setMenuActive(1)
       })
     
   }
@@ -74,10 +75,11 @@ function Step5ValidationPage() {
           })
         }
 
-        console.log(temp);
+        // console.log(temp);
         
         
       saveItemFuncOP(temp)
+      setStep(6)
       
       })
   }

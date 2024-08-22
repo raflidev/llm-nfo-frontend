@@ -39,15 +39,13 @@ function UploadPopUp(props) {
         })
         queryClient.invalidateQueries({queryKey: ['important_term', id]})
         setToggle(!toggle)
-        window.location.reload();
+        // window.location.reload();
       }
     }
   })
 
   const submitHandler = (e, type) => {
     e.preventDefault()
-
-    console.log(data);
     
 
     if(type === 'url') {
@@ -55,6 +53,9 @@ function UploadPopUp(props) {
         conversation_id: id,
         url: url
       }
+
+      // console.log(data);
+      
       uploadFileURL(data)
     }
     

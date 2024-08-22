@@ -8,7 +8,7 @@ import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
 
 function ValidationDataFacet(props) {
-  const {data} = props
+  const {data, saveFunction} = props
   const {id} = useParams()
   
   const {setStep} = useContext(DataChatContext)
@@ -68,7 +68,10 @@ function ValidationDataFacet(props) {
     const data = {
       "item": termItem
     }
+    // console.log(data);
+    
     // setItem(data)
+    saveFunction(data)
   }
 
   const resetAllCQ = () => {
@@ -106,7 +109,7 @@ function ValidationDataFacet(props) {
                     {
                       cqItem[1].map((item, index) => {
                         return (
-                          <div className='space-y-2'>
+                          <div className='space-y-2' key={index}>
                             <div className='font-semibold'>{item[0]}</div>
                             <div key={index} className='flex space-x-3 items-center'>
                               {!saveItem[indexCQ][index] ?
@@ -156,7 +159,7 @@ function ValidationDataFacet(props) {
             <div className='space-x-2 flex justify-end pt-5'>
               <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
               <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(termItem?.map((item) => {
-      return item.map((item2) => {
+      return item[1].map((item2) => {
         return true
       })
     }))}}>Save All</button>

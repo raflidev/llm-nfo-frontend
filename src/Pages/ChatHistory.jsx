@@ -40,7 +40,8 @@ function ChatHistory() {
   const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
   const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
   const {data: classAndDataProperty, isPending: isPendingClassAndDataProperty} = useQuery({queryKey: ['class_and_data_property', id], queryFn: () => getClassesAndDataPropertiesByConvID(id)})
-
+  // console.log(classAndDataProperty);
+  
   useEffect(() => {
     if(conversation) {
       const data = JSON.parse(conversation?.data?.competency_questions)
@@ -58,13 +59,15 @@ function ChatHistory() {
         // console.log("Data Property:", DataProperty);  
         
         setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_id, item.data_property_type]), item.class_id]))
-        setFacetDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_type, item.data_property_id])]))
+        setFacetDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_type, item.data_property_id]), item.class_id]))
     }
 
     if(classAndDataProperty?.data.data.length > 0) {
         const ObjectProperty = classAndDataProperty?.data.data
         setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id]), item.class_id]))
-        setFacetOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id])]))
+        setFacetOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.domains, item.object_property_id]), item.class_id]))
+        // console.log(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id]), item.class_id]));
+      
     }
       // if(data){
       //   importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)
