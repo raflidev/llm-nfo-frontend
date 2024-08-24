@@ -39,7 +39,26 @@ function ValidationDataFacetDomain(props) {
     })
   }
 
+  const changeHandleRange = (e, indexCQ, index, index2, index3) => {
+    console.log(termItem);
+
+    setTermItem((prev) => {
+      let newItems = [...prev]
+      newItems[indexCQ][1][index][1][index2].ranges[index3].range_name = e.target.value
+      return newItems
+    })
+  }
+
   const saveCQ = (cq, indexCQ, indexItem, index2) => {
+    // save item by indexCQ
+    setSaveItem((prev) => {
+      let newItems = [...prev]
+      newItems[indexCQ][indexItem][index2] = true
+      return newItems
+    })
+  }
+
+  const saveCQRange = (cq, indexCQ, indexItem, index2, index3) => {
     // save item by indexCQ
     setSaveItem((prev) => {
       let newItems = [...prev]
@@ -56,6 +75,16 @@ function ValidationDataFacetDomain(props) {
       return newItems
     })
   }
+
+  const deleteCQRange = (cq, indexCQ, indexItem, index2, index3) => {
+    // delete item by indexCQ
+    setTermItem((prev) => {
+      let newItems = [...prev]
+      newItems[indexCQ][1][indexItem][1][index2].ranges.splice(index3, 1)
+      return newItems
+    })
+  }
+  
 
   const saveAllItem = () => {
     const data = {
@@ -164,14 +193,19 @@ function ValidationDataFacetDomain(props) {
                                         {
                                           item2.ranges.map((item3, index3) => {
                                             return <div key={`range-${index3}`} className='flex items-center space-x-3'>
-                                            <textarea  className='ml-3 flex w-full bg-transparent border border-white p-1 rounded' value={item3.range_name} disabled />
+                                              <textarea  className='ml-3 flex w-full bg-transparent border border-white p-1 rounded' value={item3.range_name} onChange={(e) => changeHandleRange(e, indexCQ, index, index2, index3)} />
+                                              {/* {
+                                                !saveItem[indexCQ][index][index2] ?
+                                                :
+                                                <textarea  className='ml-3 flex w-full bg-transparent border border-white p-1 rounded' value={item3.range_name} disabled />
+                                              } */}
                                             <div className='flex space-x-1'>
-                                            <button className='hover:bg-blue-primary p-1 rounded duration-200' onClick={() => saveCQ(cqItem, indexCQ, index, index2)}>
+                                            <button className='hover:bg-blue-primary p-1 rounded duration-200' onClick={() => saveCQRange(cqItem, indexCQ, index, index2, index3)}>
                                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                               </svg>
                                             </button>
-                                            <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQ(cqItem, indexCQ, index, index2)}>
+                                            <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQRange(cqItem, indexCQ, index, index2, index3)}>
                                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                                               </svg>
