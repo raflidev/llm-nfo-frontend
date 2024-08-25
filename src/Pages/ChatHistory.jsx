@@ -14,6 +14,9 @@ import Step4ValidationPage from './Step4ValidationPage'
 import { getImportantTempByConvID } from '../services/importantTemp.services'
 import { getClassesAndDataPropertiesByConvID, getClassesByConvID } from '../services/classes.services'
 import Step6ValidationPage from './Step6ValidationPage'
+import Step7ValidationPage from './Step7ValidationPage'
+import { getInstancesClassesByConvID } from '../services/instancesClasses.services'
+import Step2Page from './Step2Page'
 
 function ChatHistory() {
   const {id} = useParams()
@@ -34,6 +37,8 @@ function ChatHistory() {
   const [termOP, setTermOP] = useState([])
   const [facetOP, setFacetOP] = useState([])
   const [facetDP, setFacetDP] = useState([])
+  const [insClass, setInsClass] = useState([])
+  const [existingOntology, setExistingOntology] = useState([])
 
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
@@ -41,6 +46,7 @@ function ChatHistory() {
   const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
   const {data: classAndDataProperty, isPending: isPendingClassAndDataProperty} = useQuery({queryKey: ['class_and_data_property', id], queryFn: () => getClassesAndDataPropertiesByConvID(id)})
   // console.log(classAndDataProperty);
+  const {data: instancesClasses, isPending: isPendingInstancesClasses} = useQuery({queryKey: ['instances_class', id], queryFn: () => getInstancesClassesByConvID(id)})
   
   useEffect(() => {
     if(conversation) {
@@ -60,7 +66,10 @@ function ChatHistory() {
         
         setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_id, item.data_property_type]), item.class_id]))
         setFacetDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_type, item.data_property_id]), item.class_id]))
-    }
+      }
+
+      setInsClass(instancesClasses?.data.data)
+      
 
     if(classAndDataProperty?.data.data.length > 0) {
         const ObjectProperty = classAndDataProperty?.data.data
@@ -81,12 +90,13 @@ function ChatHistory() {
       }
       setChat([conversation?.data])
     }
-  }, [conversation, isPendingValidCQ, id, importantTerm, classes, classAndDataProperty])
+  }, [conversation, isPendingValidCQ, id, importantTerm, classes, classAndDataProperty, instancesClasses])
 
 
   return (
     <DataChatContext.Provider value={{topic, setTopic, chat, setChat, step, setStep, cq, setCq, iTerm, setITerm, termClasses, 
-                              setTermClasses, termOP, setTermOP, termDP, setTermDP, facetDP, setFacetDP, facetOP, setFacetOP}}>
+                              setTermClasses, termOP, setTermOP, termDP, setTermDP, facetDP, setFacetDP, facetOP, setFacetOP, insClass, setInsClass,
+                               existingOntology, setExistingOntology}}>
       <LayoutPage>
         {
           !loadingTopic ? 
@@ -120,6 +130,9 @@ function ChatHistory() {
                   Reuse Existing Ontologies: Integrate and adapt ontologies that have been previously developed to fit within your current project. This process involves selecting relevant ontologies, aligning them with your domain, and making necessary modifications to ensure compatibility and consistency with your project's requirements.
                   </div>
                 </div> 
+
+                <Step2Page/>
+              
                 {/* <GridCQ setLoading={isPendingConversation}/> */}
               </>
               : ''
@@ -198,9 +211,11 @@ function ChatHistory() {
                   <div className='text-sm'>STEP {step}</div>
                   <div className='font-semibold text-3xl'>Create Instances Class</div>
                   <div className='font-light'>
-                    Create class instances based on defined attributes, then validate them using competency questions to ensure alignment with the domain’s goals
+                  Create class instances based on the defined attributes, then validate them using competency questions to ensure alignment with the domain's objectives. You can add the class names in STEP 4.
                   </div>
                 </div>
+
+                <Step7ValidationPage/>
               </>
               :
               ''

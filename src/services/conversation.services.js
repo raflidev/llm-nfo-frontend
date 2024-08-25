@@ -23,3 +23,12 @@ export const deleteConversationById = async (id) => {
         return res.data
     })
 }
+
+// https://ontology-api.hidayattaufiqur.dev/generation/ontology/:conversation_id/existing-ontologies
+export const createExistingOntology = async (data) => {
+    return await axios.post(`${process.env.REACT_APP_API_URI}/generation/ontology/${data.conversation_id}/existing-ontologies`, data, {
+        withCredentials: true
+    }).then((res) => {
+        return res.data
+    })
+}

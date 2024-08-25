@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import ValidationData from '../components/organisms/ValidationData'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import { getClassesByConvID, putSaveClassesByClassesID } from '../services/classes.services'
+import { postSaveClassesByClassesID } from '../services/classes.services'
 import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../components/context/DataChatContext'
 
@@ -13,26 +13,37 @@ function Step4ValidationPage() {
 
 
 
-  const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: putSaveClassesByClassesID,
+  const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveClassesByClassesID,
     onSuccess: (response) => {
       if(response.status === 200){
         toast.success(response.data.message, {
           transition: Slide
         })
-        queryClient.invalidateQueries({queryKey: ['classes']})
+        queryClient.invalidateQueries({queryKey: ['classes', id]})
+        queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+
       }
+    },
+    onError: (error) => {
+      console.log(error);
+      
     }
   })
 
   const saveClasses = (item) => {
+    const data = {
+      "id": id,
+      "classes": []
+    }
     item.item.map((item) => {
-      const data = {
-        "id": item[1],
-        "class": item[0]
-      }
-      mutateSaveClasses(data)
-      setStep(5)
+      data.classes.push({
+        "class_id": item[1],
+        "class_name": item[0]
+      })
     })
+    // console.log(data);
+    mutateSaveClasses(data)
+    // setStep(5)
     
   }
 

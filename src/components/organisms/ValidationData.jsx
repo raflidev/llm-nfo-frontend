@@ -29,7 +29,6 @@ function ValidationData(props) {
     })
   )
 
-  console.log(termItem);
 
   const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
     onSuccess: (response) => {

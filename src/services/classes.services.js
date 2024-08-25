@@ -8,12 +8,14 @@ export const getClassesByConvID = async (id) => {
     return error
   }
 }
-
-export const putSaveClassesByClassesID = async (data) => {
+export const postSaveClassesByClassesID = async (data) => {
   try {
-    const response = await axios.put(`${process.env.REACT_APP_API_URI}/generation/classes/${data.id}`, data)
+    const response = await axios.post(`${process.env.REACT_APP_API_URI}/generation/classes/${data.id}`, data
+    )
     return response
   } catch (error) {
+    console.log(error);
+    
     return error
   }
 }

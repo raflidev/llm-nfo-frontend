@@ -78,14 +78,11 @@ function Step6ValidationPage() {
         }
         hasildomain.push(temp)
         // setMenuActive(2)
-        // saveItemFuncOP(temp)
+        saveItemFuncOP(temp)
     })
-    console.log(hasildomain.map((item => item.object_properties.map((item2) => [item2.object_property_name, item2.domains.map((item3) => item3), item2.object_property_id]))).map((item) => item));
-    console.log(facetOP);
+    // console.log(hasildomain);
 
     
-    
-    setDomain(hasildomain.map((item => item.object_properties.map((item2) => [item2.object_property_name, item2.domains.map((item3) => item3), item2.object_property_id]))).map((item) => item))
   }
 
   return (

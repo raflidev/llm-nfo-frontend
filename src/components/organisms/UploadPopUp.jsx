@@ -5,6 +5,7 @@ import { postImportantTempPDF, postImportantTempURL } from '../../services/impor
 import ButtonLoading from '../atoms/ButtonLoading';
 import { useParams } from 'react-router-dom';
 import { Slide, toast } from 'react-toastify';
+import { getInstancesClasses } from '../../services/instancesClasses.services';
 
 function UploadPopUp(props) {
   const { toggle, setToggle, data, setData, setDataName } = props
@@ -15,6 +16,19 @@ function UploadPopUp(props) {
   const [url, setUrl] = useState('')
   const queryClient = new QueryClient()
 
+  const {mutate: generateInstacesClasses, isPending: isPendingGenerateInstacesClasses} = useMutation({
+    mutationFn: getInstancesClasses,
+    onSuccess: (response) => {
+      console.log(response);
+      if(response.status === 200) {
+        toast.success(response.data.message, {
+          transition: Slide 
+        })
+        // queryClient.invalidateQueries({queryKey: ['instances_class', id]})
+      }
+    }
+  })
+
   const {mutate: uploadFileURL, isPending: isPendingUploadFileURL} = useMutation({
     mutationFn: postImportantTempURL,
     onSuccess: (response) => {
@@ -23,12 +37,15 @@ function UploadPopUp(props) {
         toast.success(response.data.message, {
           transition: Slide 
         })
-        queryClient.invalidateQueries({queryKey: ['important_term', id]})
+        console.log(id);
+        generateInstacesClasses(id)
+        queryClient.invalidateQueries({queryKey: ['important_term', id]})  
         setToggle(!toggle)
         // window.location.reload();
       }
     }
   })
+
   const {mutate: uploadFilePDF, isPending: isPendingUploadFilePDF} = useMutation({
     mutationFn: postImportantTempPDF,
     onSuccess: (response) => {
@@ -37,6 +54,8 @@ function UploadPopUp(props) {
         toast.success(response.data.message, {
           transition: Slide 
         })
+        console.log(id);
+        generateInstacesClasses(id)
         queryClient.invalidateQueries({queryKey: ['important_term', id]})
         setToggle(!toggle)
         // window.location.reload();
@@ -53,9 +72,6 @@ function UploadPopUp(props) {
         conversation_id: id,
         url: url
       }
-
-      // console.log(data);
-      
       uploadFileURL(data)
     }
     
