@@ -8,6 +8,7 @@ import { Slide, toast } from 'react-toastify'
 import { useParams } from 'react-router-dom'
 import ValidationDataFacetDomain from '../components/organisms/ValidationDataFacetDomain'
 import { postSaveObjectPropertiesByConvID } from '../services/objectProperty.services'
+import { redirectLink } from '../services/utils'
 
 function Step6ValidationPage() {
   
@@ -38,7 +39,8 @@ function Step6ValidationPage() {
           transition: Slide
         })
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
-        // setStep(4)
+        
+        redirectLink(`/chat/${id}/7`)
       }
     }
   })

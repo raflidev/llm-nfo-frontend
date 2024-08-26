@@ -51,8 +51,12 @@ function Step7ValidationPage() {
 
   return (
     <div>
-      
-      <ValidationDataInstancesClass data={insClass} saveFunction={saveTerm}/>
+      {
+        insClass.length > 0 ?
+        <ValidationDataInstancesClass data={insClass} saveFunction={saveTerm}/>
+        :
+        ''
+      }
     </div>
   )
 }

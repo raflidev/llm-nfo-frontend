@@ -72,10 +72,12 @@ function ValidationDataFacetDomain(props) {
     window.location.reload()
   }
 
-  const addItemHandler = (index, index2) => {
+  const addItemHandler = (index) => {
     setTermItem((prev) => {
       let newItems = [...prev]
-      newItems[index][1][index2][1].push({domain_name: '', ranges: []})
+      
+      // newItems[index][1][index2][1].push({domain_name: '', ranges: []})
+      newItems[index][1].push(['', [{domain_name: '', ranges: []}]])
       return newItems
     })
     
@@ -171,17 +173,17 @@ function ValidationDataFacetDomain(props) {
                               </div>
                             </div>
 
-                            <div className='pt-3'>
-                              <button onClick={() => addItemHandler(indexCQ, index)} className='py-1 px-3 bg-green-600 hover:bg-green-900 rounded-lg text-sm duration-300 flex space-x-1 item-center'>
-                                <IconPlus/>
-                                <span>Add Domain</span>
-                              </button>
-                            </div>
                           </div>
                         )
                         
                       })
                     }
+                            {/* <div className='pt-3'>
+                              <button onClick={() => addItemHandler(indexCQ)} className='py-1 px-3 bg-green-600 hover:bg-green-900 rounded-lg text-sm duration-300 flex space-x-1 item-center'>
+                                <IconPlus/>
+                                <span>Add Domain</span>
+                              </button>
+                            </div> */}
                       {/* <div className='pt-3'>
                         <button onClick={() => addItemHandler(indexCQ)} className='py-1 px-3 bg-green-600 hover:bg-green-900 rounded-lg text-sm duration-300 flex space-x-1 item-center'>
                           <IconPlus/>
