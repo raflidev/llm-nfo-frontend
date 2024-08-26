@@ -6,6 +6,7 @@ import IconPlus from '../atoms/Icon/IconPlus'
 import ButtonLoading from '../atoms/ButtonLoading'
 import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
+import IconDownload from '../atoms/Icon/IconDownload'
 
 function ValidationDataInstancesClass(props) {
   const {data, saveFunction} = props
@@ -141,15 +142,21 @@ function ValidationDataInstancesClass(props) {
 
           {
             !confirmation ? 
-            <div className='space-x-2 flex justify-end pt-5'>
-              <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
-              <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => saveAllUI()}>Save All</button>
+            <div className='space-x-2 flex justify-between pt-5'>
+               <div className='flex space-x-2 items-center py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300'>
+                <IconDownload/>
+                <a href={`https://ontology-api.hidayattaufiqur.dev/generation/ontology/${id}`}>Download</a>
+              </div>
+              <div>
+                <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
+                <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => saveAllUI()}>Save All</button>
+              </div>
             </div>
             :
             <div className='space-x-2 flex justify-end pt-5'>
-              <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
-              {/* ISLOADING */}
-              <ButtonLoading onClick={() => saveAllItem(termItem)} type='button'>Are you sure?</ButtonLoading>
+                <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
+                {/* ISLOADING */}
+                <ButtonLoading onClick={() => saveAllItem(termItem)} type='button'>Are you sure?</ButtonLoading>
             </div>
           }
         </>

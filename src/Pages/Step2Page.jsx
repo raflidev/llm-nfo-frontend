@@ -50,6 +50,7 @@ function Step2Page() {
         {
           existingOntology.length > 0 && (
             <div>
+              <hr className='pb-4' />
               <h1 className='font-semibold'>{existingOntology.length} Ontology founds..</h1>
               <p>
                 The ontology might be inaccurate and should be reviewed. This is only provided as a reference example of existing ontologies.

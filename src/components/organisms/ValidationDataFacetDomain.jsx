@@ -11,7 +11,7 @@ function ValidationDataFacetDomain(props) {
   const {data, saveFunction} = props
   const {id} = useParams()
 
-  // console.log(data);
+  console.log(data);
   
   
   const {setStep} = useContext(DataChatContext)
@@ -84,7 +84,12 @@ function ValidationDataFacetDomain(props) {
   const addItemRangeHandler = (indexCQ, index, index2) => {
     setTermItem((prev) => {
       let newItems = [...prev]
-      newItems[indexCQ][1][index][1][index2].ranges.push({range_name: ''})
+      if(newItems[indexCQ][1][index][1][index2].ranges === null) {
+        newItems[indexCQ][1][index][1][index2].ranges = []
+        newItems[indexCQ][1][index][1][index2].ranges.push({range_name: ''})
+      }else{
+        newItems[indexCQ][1][index][1][index2].ranges.push({range_name: ''})
+      }
       return newItems
     })
 
@@ -137,7 +142,7 @@ function ValidationDataFacetDomain(props) {
                                         </div>
                                         <div className='text-sm font-semibold'>Range: </div>
                                           {
-                                            item2.ranges.map((item3, index3) => {          
+                                            item2.ranges !== null && item2.ranges.map((item3, index3) => {          
                                               return <div key={`range-${index3}`} className='flex items-center space-x-3'>
                                                
                                                   <textarea  className='ml-3 flex w-full bg-transparent border border-white p-1 rounded' value={item3.range_name} onChange={(e) => changeHandleRange(e, indexCQ, index, index2, index3)} />

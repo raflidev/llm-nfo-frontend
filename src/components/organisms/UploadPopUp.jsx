@@ -38,7 +38,7 @@ function UploadPopUp(props) {
           transition: Slide 
         })
         console.log(id);
-        generateInstacesClasses(id)
+        // generateInstacesClasses(id)
         queryClient.invalidateQueries({queryKey: ['important_term', id]})  
         setToggle(!toggle)
         // window.location.reload();
@@ -55,7 +55,7 @@ function UploadPopUp(props) {
           transition: Slide 
         })
         console.log(id);
-        generateInstacesClasses(id)
+        // generateInstacesClasses(id)
         queryClient.invalidateQueries({queryKey: ['important_term', id]})
         setToggle(!toggle)
         // window.location.reload();

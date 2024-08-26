@@ -22,6 +22,7 @@ function ValidationData(props) {
   const [confirmation, setConfirmation] = useState(false)
   const [toggle, setToggle] = useState(false)
   const [dataUpload, setDataUpload] = useState([])
+  const [itemDelete, setItemDelete] = useState([])
   const [dataName, setDataName] = useState('')
   const [saveItem, setSaveItem] = useState(
     termItem?.map((item) => {
@@ -63,9 +64,14 @@ function ValidationData(props) {
     // delete item by indexCQ
     setTermItem((prev) => {
       let newItems = [...prev]
-      console.log(newItems);
-      
       newItems.splice(indexCQ, 1)
+      return newItems
+    })
+
+    // setItemdelete
+    setItemDelete((prev) => {
+      let newItems = [...prev]
+      newItems.push(cq)
       return newItems
     })
   }

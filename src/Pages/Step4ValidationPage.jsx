@@ -11,8 +11,6 @@ function Step4ValidationPage() {
   const {setStep, termClasses, setTermClasses} = useContext(DataChatContext)
   const queryClient = new QueryClient()
 
-
-
   const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveClassesByClassesID,
     onSuccess: (response) => {
       if(response.status === 200){
