@@ -16,6 +16,9 @@ function ValidationDataOnClass(props) {
   const queryClient = new QueryClient()
   
   const [termItem, setTermItem] = useState(data)
+
+  // console.log(data);
+  
   const [confirmation, setConfirmation] = useState(false)
   const [saveItem, setSaveItem] = useState(
     termItem?.map((item) => {

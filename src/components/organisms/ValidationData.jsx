@@ -7,13 +7,11 @@ import ButtonLoading from '../atoms/ButtonLoading'
 import UploadPopUp from './UploadPopUp'
 import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
+import { deleteClasses } from '../../services/classes.services'
 
 function ValidationData(props) {
   const {data, saveFunction, setItem, isLoading} = props
   const {id} = useParams()
-
-//   console.log(data);
-//   return
   
   const {setStep} = useContext(DataChatContext)
   const queryClient = new QueryClient()
@@ -31,14 +29,13 @@ function ValidationData(props) {
   )
 
 
-  const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
+  const {mutate: deleteItem, isPending: isPendingDeleteItem} = useMutation({mutationFn: deleteClasses,
     onSuccess: (response) => {
       if(response.status === 200){
         toast.success(response.data.message, {
           transition: Slide
         })
-        queryClient.invalidateQueries({queryKey: ['important_term', id]})
-        setStep(4)
+        queryClient.invalidateQueries({queryKey: ['classes', id]})
       }
     }
   })
@@ -71,7 +68,7 @@ function ValidationData(props) {
     // setItemdelete
     setItemDelete((prev) => {
       let newItems = [...prev]
-      newItems.push(cq)
+      newItems.push(cq[1])
       return newItems
     })
   }
@@ -80,7 +77,14 @@ function ValidationData(props) {
     const data = {
       "item": termItem
     }
+    
+    const dataDelete = {
+      "class_ids": itemDelete
+    }
+
     setItem(data)
+    deleteItem(dataDelete)
+    // saveFunction(data)
   }
 
   const resetAllCQ = () => {

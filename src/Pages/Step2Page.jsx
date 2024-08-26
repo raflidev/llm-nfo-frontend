@@ -10,7 +10,8 @@ function Step2Page() {
   const {existingOntology, setExistingOntology} = useContext(DataChatContext)
   const [text, setText] = useState('')
   const {id} = useParams()
-
+  console.log(existingOntology);
+  
   const queryClient = new QueryClient()
 
   const {mutate: generateExistingOntology, isPending: isPendingGenerateExistingOntology} = useMutation({
@@ -48,10 +49,9 @@ function Step2Page() {
     <div>
       <div className="space-y-2">
         {
-          existingOntology.length > 0 && (
+          existingOntology !== undefined || existingOntology.length > 0 && (
             <div>
-              <hr className='pb-4' />
-              <h1 className='font-semibold'>{existingOntology.length} Ontology founds..</h1>
+              <hr className='pb-2' />
               <p>
                 The ontology might be inaccurate and should be reviewed. This is only provided as a reference example of existing ontologies.
 
@@ -62,73 +62,85 @@ function Step2Page() {
         }
         
 
-        <div className="space-y-6 pt-10">
-          
+        <div className="space-y-6 pt-5">
           {
-            existingOntology.map((item, index) => (
-              <div key={index} className='space-y-3'>
-                <h1 className='font-semibold text-xl'>{item.class_name}</h1>
-                <a href={item.link} className='text-sm text-blue-400 underline hover:cursor-pointer hover:text-white duration-150'>{item.link}</a>
+            existingOntology !== undefined || existingOntology.length > 0 && (
+              <div  className='space-y-3'>
+                <div className='space-y-1'>
+                <h1 className='font-semibold text-xl'>{existingOntology.class_name}</h1>
+                  <div className="grid grid-cols-1">
+                    {
+                      existingOntology.link.map((link, index) => (
+                        <a href={link} className='text-sm text-blue-400 underline hover:cursor-pointer hover:text-white duration-150'>{link}</a>
+                      ))
+                    }
+                  </div>
+                </div>
                 <div className='text-sm'>
                   <span className='font-semibold'>Domain: </span>
-                  {item.domain} |
+                  {existingOntology.domain} |
                   <span className='font-semibold'> Scope: </span>
-                  {item.scope} 
+                  {existingOntology.scope} 
                 </div>
                 <div className="">
-                  {item.description}
+                  {existingOntology.description}
                 </div>
                 
                 <div className="flex gap-2 flex-wrap">
                 <div className='text-sm font-semibold'>Class Labels:</div>
                   {
-                    item.class_labels.map((label, index) => (
+                    existingOntology.class_labels.map((label, index) => (
                       <p className='py-1 bg-secondary-bg rounded-full px-5 text-xs' key={index}>{label}</p>
                     ))
                   }
                 </div>
                 <div>
                 <div className='text-sm font-semibold'>Data Properties:</div>
+                <div className="pl-3 space-y-1 pt-2">
                   {
-                    item.data_properties.map((dp, index) => (
+                    existingOntology.data_properties.map((dp, index) => (
                       <div key={index} className='space-y-3'>
                         <div className=''>{dp.data_property_name}: {dp.data_property_type}</div>
                       </div>
                     ))
                   }
                 </div>
+                </div>
                 <div>
                 <div className='text-sm font-semibold'>Object Properties:</div>
+                <div className="space-y-2">
                   {
-                    item.object_properties.map((op, index) => (
+                    existingOntology.object_properties.map((op, index) => (
                       <div key={index} className='space-y-2'>
-                        <div className=''>{op.object_property_name}</div>
-                        {
-                          op.domains.map((domain, index) => {
-                            return (
-                              <div key={index} className='space-y-2'>
-                                <div className='text-sm font-semibold'>Domain: </div>
-                                <span>{domain.domain_name}</span>
-                                {
-                                  domain.ranges.map((range, index) => {
-                                    return <div key={index} className='space-y-2'>
-                                      <div className='text-sm font-semibold'>Range:</div>
-                                      <span>{range.range_name}</span>
-                                    </div>
-                                  })
-                                }
-                              </div>
+                        <div className=''> • {op.object_property_name}</div>
+                        <div className="pl-3 space-y-1 pt-1">
+                          {
+                            op.domains.map((domain, index) => {
+                              return (
+                                <div key={index} className='space-y-2'>
+                                  <div className='text-sm font-semibold'>Domain: </div>
+                                  <span>{domain.domain_name}</span>
+                                  {
+                                    domain.ranges.map((range, index) => {
+                                      return <div key={index} className='space-y-2'>
+                                        <div className='text-sm font-semibold'>Range:</div>
+                                        <span>{range.range_name}</span>
+                                      </div>
+                                    })
+                                  }
+                                </div>
+                              )
+                            } 
                             )
                           }
-                            
-                          )
-                        }
+                        </div>
                       </div>
                     ))
                   }
                 </div>
+                </div>
               </div>
-            ))
+            )
           }
         </div>
       </div>

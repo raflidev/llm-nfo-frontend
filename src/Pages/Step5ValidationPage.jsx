@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ValidationDataOnClass from '../components/organisms/ValidationDataOnClass'
 import DataChatContext from '../components/context/DataChatContext'
 import { postSavedataPropertyByConvID } from '../services/dataProperty.services'
@@ -13,10 +13,12 @@ function Step5ValidationPage() {
   const [menuActive, setMenuActive] = useState(0)
   const {id} = useParams()
 
+
   const {termDP, termOP, setStep} = useContext(DataChatContext)
   const queryClient = new QueryClient()
   
-
+  console.log(termDP);
+  
   const {mutate: saveItemFuncDP, isPending: isPendingSaveItemDP} = useMutation({mutationFn: postSavedataPropertyByConvID,
     onSuccess: (response) => {
       if(response.status === 200){
@@ -84,6 +86,11 @@ function Step5ValidationPage() {
       })
   }
 
+  // useEffect(() => {
+  //   setStep(5)
+  //   // setMenuActive(0)
+  // }, [])
+
   return (
     <div>
       <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
@@ -102,7 +109,12 @@ function Step5ValidationPage() {
         menuActive === 0 ?
         <>
           <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
-          <ValidationDataOnClass data={termDP} saveFunction={saveTermDP}/>
+          {
+            termDP.length > 0 ?
+            <ValidationDataOnClass data={termDP} saveFunction={saveTermDP}/>
+            :
+            ''
+          }
         </>
         :
         ''

@@ -28,3 +28,14 @@ export const getClassesAndDataPropertiesByConvID = async (id) => {
     return error
   }
 }
+
+export const deleteClasses = async (data) => {
+  try {
+    const response = await axios.delete(`${process.env.REACT_APP_API_URI}/generation/classes`, {data})
+    
+    return response
+  } catch (error) {
+    console.log(error);
+    return error
+  }
+}

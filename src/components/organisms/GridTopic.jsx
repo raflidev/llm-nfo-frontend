@@ -137,7 +137,7 @@ function GridTopic(props) {
               return (
               <div key={index} className='w-full relative'>
                   <Topic key={index} isActive={item.conversation_id === id}>
-                    <a href={`/chat/${item.conversation_id}`} className="w-full">
+                    <a href={`/chat/${item.conversation_id}/1`} className="w-full">
                       <div>
                         <span className='block w-full'>{item.title.length > 25 ? item.title.substring(0,25) + '...' : item.title}</span> 
                       </div>

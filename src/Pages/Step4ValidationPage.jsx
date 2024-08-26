@@ -5,12 +5,12 @@ import { useParams } from 'react-router-dom'
 import { postSaveClassesByClassesID } from '../services/classes.services'
 import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../components/context/DataChatContext'
+import { redirectLink } from '../services/utils'
 
 function Step4ValidationPage() {
   const {id} = useParams()
   const {setStep, termClasses, setTermClasses} = useContext(DataChatContext)
   const queryClient = new QueryClient()
-
   const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveClassesByClassesID,
     onSuccess: (response) => {
       if(response.status === 200){
@@ -19,7 +19,8 @@ function Step4ValidationPage() {
         })
         queryClient.invalidateQueries({queryKey: ['classes', id]})
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
-
+        // setStep(5)
+        redirectLink(`/chat/${id}/5`)
       }
     },
     onError: (error) => {

@@ -103,7 +103,12 @@ function Step6ValidationPage() {
         menuActive === 0 ?
         <>
           <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
-          <ValidationDataFacet data={facetDP} saveFunction={saveTermDP}/>
+          {
+            facetDP.length > 0 ?
+            <ValidationDataFacet data={facetDP} saveFunction={saveTermDP}/>
+            :
+            ''
+          }
         </>
         :
         ''

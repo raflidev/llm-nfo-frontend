@@ -26,7 +26,7 @@ function App() {
         <ToastContainer />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/chat/:id" element={<ChatHistory />} />
+            <Route path="/chat/:id/:step" element={<ChatHistory />} />
           </Routes>
       </BrowserRouter>
     </QueryClientProvider>
