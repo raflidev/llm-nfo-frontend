@@ -25,7 +25,7 @@ function Home() {
   const {mutate: sendMessageMutate, isPending: isPendingMessageMutate} = useMutation({mutationFn: sendMessageAPI, 
     onSuccess: (data) => {
       queryClient.invalidateQueries({queryKey: ['topic']})
-    navigate(`/chat/${data.output.conversation_id}`)
+    navigate(`/chat/${data.output.conversation_id}/1`)
     }
     })
   
