@@ -13,6 +13,10 @@ export const getConversationById = async (id) => {
         withCredentials: true
     }).then((res) => {
         return res.data
+    }).catch((err) => {
+        console.log(err);
+        // return err.response.data
+        
     })
 }
 

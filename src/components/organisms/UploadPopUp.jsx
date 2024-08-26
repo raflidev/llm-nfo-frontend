@@ -103,7 +103,7 @@ function UploadPopUp(props) {
                   Upload File
                 </h3>
                 <div className="mt-2 space-y-2">
-                  <div>
+                  {/* <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                       Domain
                     </label>
@@ -114,7 +114,7 @@ function UploadPopUp(props) {
                       Scope
                     </label>
                     <InputText type='text' name='name' text={scope} setText={setScope} disabled={true} />
-                  </div>
+                  </div> */}
                   <div className="space-y-2">
                     <div className='text-primary-bg font-medium text-sm'>You can choose</div>
                     <div className='text-black space-x-2 text-sm'>
