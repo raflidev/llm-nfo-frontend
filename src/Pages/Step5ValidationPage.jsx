@@ -112,7 +112,7 @@ function Step5ValidationPage() {
           <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
           {
             termDP.length > 0 ?
-            <ValidationDataOnClass data={termDP} saveFunction={saveTermDP}/>
+            <ValidationDataOnClass data={termDP} name={menu[menuActive]} saveFunction={saveTermDP}/>
             :
             ''
           }
@@ -124,7 +124,7 @@ function Step5ValidationPage() {
         menuActive === 1 ?
         <>
           <div className='font-semibold text-xl mb-2'>{menu[menuActive]}</div>
-          <ValidationDataOnClass data={termOP} saveFunction={saveTermOP}/>
+          <ValidationDataOnClass data={termOP} name={menu[menuActive]} saveFunction={saveTermOP}/>
         </>
         :
         ''

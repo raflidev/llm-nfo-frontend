@@ -105,12 +105,12 @@ function ValidationDataFacet(props) {
               return (
                 <div key={indexCQ}>
                   <div className="border border-black rounded p-4 space-y-4">
-                    <h1 className='font-semibold'>{cqItem[0]}</h1>
+                    <h1 className='font-semibold'>Class name: {cqItem[0]}</h1>
                     {
                       cqItem[1].map((item, index) => {
                         return (
                           <div className='space-y-2' key={index}>
-                            <div className='font-semibold'>{item[0]}</div>
+                            <div className='font-semibold'>{item[0]} (Type)</div>
                             <div key={index} className='flex space-x-3 items-center'>
                               {!saveItem[indexCQ][index] ?
                                 <textarea className='flex w-full bg-transparent border border-white p-1 rounded' value={item[1]} onChange={(e) => changeHandle(e, indexCQ, index)} />

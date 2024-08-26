@@ -8,7 +8,7 @@ import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
 
 function ValidationDataOnClass(props) {
-  const {data, saveFunction} = props
+  const {data, saveFunction, name} = props
   
   const {id } = useParams()
   
@@ -90,12 +90,13 @@ function ValidationDataOnClass(props) {
       {
         termItem?.length > 0 ?
         <>
-          <div className='space-y-2'>
+          <div className='space-y-3'>
             {termItem.map((cqItem, indexCQ) => {
               return (
                 <div key={indexCQ}>
                   <div className="border border-black rounded p-4">
-                    <h1 className='font-semibold'>{cqItem[0]}</h1>
+                    <h1 className='font-semibold'>Class name: {cqItem[0]}</h1>
+                    <span className='text-sm'>{name} name:</span>
                     {
                       cqItem[1].map((item, index) => {
                         return (
