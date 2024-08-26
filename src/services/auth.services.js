@@ -5,3 +5,9 @@ export const loginAuth = async (data) => {
         return res.data
     })
 }
+
+export const logoutAuth = async () => {
+    return await axios.post(`${process.env.REACT_APP_API_URI}/logout`).then((res) => {
+        return res.data
+    })
+}

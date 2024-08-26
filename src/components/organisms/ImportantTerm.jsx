@@ -14,8 +14,6 @@ function ImportantTerm() {
   const {setStep, iTerm, setITerm} = useContext(DataChatContext)
   const queryClient = new QueryClient()
 
-  // const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
-  
   const [termItem, setTermItem] = useState(iTerm)
   const [confirmation, setConfirmation] = useState(false)
   const [toggle, setToggle] = useState(false)
@@ -102,22 +100,26 @@ function ImportantTerm() {
     })
   }
 
+  // useEffect(() => {
+  //   setTermItem(iTerm)
+  // }, [iTerm])
+
   return (
     <>
       {
         toggle ? <UploadPopUp toggle={toggle} setToggle={setToggle} data={dataUpload} setData={setDataUpload} setDataName={setDataName} /> : ''
       }
       {
-        iTerm.length > 0 ?
+        iTerm?.length > 0 ?
         <>
           <div className='space-y-2'>
-            {iTerm.map((cqItem, indexCQ) => {
+            {iTerm?.map((cqItem, indexCQ) => {
               return (
                 <div key={indexCQ} className='flex space-x-3 items-center'>
                   {!saveItem[indexCQ] ?
-                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} onChange={(e) => changeHandle(e, indexCQ)} />
+                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={cqItem} onChange={(e) => changeHandle(e, indexCQ)} />
                   :
-                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' defaultValue={cqItem} disabled />
+                  <textarea className='flex w-full bg-transparent border border-white p-1 rounded mt-4' value={cqItem} disabled />
                   }
                     {!saveItem[indexCQ] ? 
                       <div className='flex space-x-1'>

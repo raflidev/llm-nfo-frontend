@@ -7,7 +7,7 @@ import google from '../../assets/images/google.svg'
 import { Slide, toast } from 'react-toastify'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { deleteConversationById, getConversationByUserId } from '../../services/conversation.services'
-import { loginAuth } from '../../services/auth.services'
+import { loginAuth, logoutAuth } from '../../services/auth.services'
 import IconClose from '../atoms/Icon/IconClose'
 
 function GridTopic(props) {
@@ -37,6 +37,19 @@ function GridTopic(props) {
           toast.error(response.data.message, {
             transition: Slide
           })
+        }
+    }
+  })
+
+  const {mutate: mutateLogout, isPending: isPendingLogout} = useMutation({mutationFn: logoutAuth, 
+    onSuccess: (response) => {
+        if(response.status === 200) {
+          toast.success("Berhasil Logout", {
+            transition: Slide
+          })
+          setTimeout(() => {
+            localStorage.clear(); window.location.reload(); window.location.href = '/';
+          }, 1000);
         }
     }
   })
@@ -87,13 +100,9 @@ function GridTopic(props) {
     }
   });
 
+
   const logoutHandle = () => {
-    toast.success("Berhasil Logout", {
-      transition: Slide
-    })
-    setTimeout(() => {
-      localStorage.clear(); window.location.reload();
-    }, 2000);
+    mutateLogout()
   }
 
 

@@ -143,10 +143,10 @@ function ValidationDataInstancesClass(props) {
           {
             !confirmation ? 
             <div className='space-x-2 flex justify-between pt-5'>
-               <div className='flex space-x-2 items-center py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300'>
+               <a href={`https://ontology-api.hidayattaufiqur.dev/generation/ontology/${id}`} className='flex space-x-2 items-center py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300'>
                 <IconDownload/>
-                <a href={`https://ontology-api.hidayattaufiqur.dev/generation/ontology/${id}`}>Download</a>
-              </div>
+                <span>Download</span>
+              </a>
               <div>
                 <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
                 <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => saveAllUI()}>Save All</button>

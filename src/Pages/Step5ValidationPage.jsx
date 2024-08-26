@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import ValidationDataOnClass from '../components/organisms/ValidationDataOnClass'
 import DataChatContext from '../components/context/DataChatContext'
 import { postSavedataPropertyByConvID } from '../services/dataProperty.services'
-import { useParams } from 'react-router-dom'
+import { redirect, useParams } from 'react-router-dom'
 import { Slide, toast } from 'react-toastify'
 import { QueryClient, useMutation } from '@tanstack/react-query'
 import { postSaveObjectPropertiesByConvID } from '../services/objectProperty.services'
+import { redirectLink } from '../services/utils'
 
 function Step5ValidationPage() {
   
@@ -38,6 +39,7 @@ function Step5ValidationPage() {
         })
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
         // setStep(4)
+        redirectLink(`/chat/${id}/6`)
       }
     }
   })
@@ -81,7 +83,6 @@ function Step5ValidationPage() {
         
         
       saveItemFuncOP(temp)
-      setStep(6)
       
       })
   }

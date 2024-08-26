@@ -5,6 +5,7 @@ import { Slide, toast } from 'react-toastify'
 import { useParams } from 'react-router-dom'
 import { postSaveInstancesClassesByClassID } from '../services/instancesClasses.services'
 import ValidationDataInstancesClass from '../components/organisms/ValidationDataInstancesClass'
+import { redirectLink } from '../services/utils'
 
 function Step7ValidationPage() {
   
@@ -24,6 +25,7 @@ function Step7ValidationPage() {
         })
         queryClient.invalidateQueries({queryKey: ['instances_class', id]})
         // setStep(4)
+        redirectLink(`/chat/${id}/7`)
       }
     }
   })
