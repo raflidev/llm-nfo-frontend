@@ -20,7 +20,10 @@ function Home() {
   const [dataName, setDataName] = useState('')
   const [step, setStep] = useState(1)
 
+
   const queryClient = useQueryClient()
+  
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
 
   const {mutate: sendMessageMutate, isPending: isPendingMessageMutate} = useMutation({mutationFn: sendMessageAPI, 
     onSuccess: (data) => {
@@ -81,7 +84,12 @@ function Home() {
             </div>
           </div>
         </div> */}
-        <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={isPendingMessageMutate} toggle={toggleUpload} setToggle={setToggleUpload} />
+        {
+          user ?
+          <InputBottom setText={setText} text={text} handleChange={handleChange} submitHandler={submitHandler} loading={isPendingMessageMutate} toggle={toggleUpload} setToggle={setToggleUpload} />
+          :
+          ''
+        }
       </LayoutPage>
     </DataChatContext.Provider>
   )
