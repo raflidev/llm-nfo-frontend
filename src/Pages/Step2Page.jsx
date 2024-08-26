@@ -49,7 +49,7 @@ function Step2Page() {
     <div>
       <div className="space-y-2">
         {
-          existingOntology !== undefined || existingOntology.length > 0 && (
+          Object.keys(existingOntology).length > 0 && (
             <div>
               <hr className='pb-2' />
               <p>
@@ -64,14 +64,14 @@ function Step2Page() {
 
         <div className="space-y-6 pt-5">
           {
-            existingOntology !== undefined || existingOntology.length > 0 && (
+            Object.keys(existingOntology).length > 0 && (
               <div  className='space-y-3'>
                 <div className='space-y-1'>
                 <h1 className='font-semibold text-xl'>{existingOntology.class_name}</h1>
                   <div className="grid grid-cols-1">
                     {
                       existingOntology.link.map((link, index) => (
-                        <a href={link} className='text-sm text-blue-400 underline hover:cursor-pointer hover:text-white duration-150'>{link}</a>
+                        <a href={link} key={index} className='text-sm text-blue-400 underline hover:cursor-pointer hover:text-white duration-150'>{link}</a>
                       ))
                     }
                   </div>

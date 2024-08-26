@@ -38,7 +38,7 @@ function ChatHistory() {
   const [facetOP, setFacetOP] = useState([])
   const [facetDP, setFacetDP] = useState([])
   const [insClass, setInsClass] = useState([])
-  const [existingOntology, setExistingOntology] = useState([])
+  const [existingOntology, setExistingOntology] = useState({})
 
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
@@ -67,8 +67,9 @@ function ChatHistory() {
         setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_id, item.data_property_type]), item.class_id]))
         setFacetDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_type, item.data_property_id]), item.class_id]))
       }
-
-      setInsClass(instancesClasses?.data.data)
+      if(instancesClasses?.data.data.length > 0) {
+        setInsClass(instancesClasses?.data.data)
+      }
       
 
     if(classAndDataProperty?.data.data.length > 0) {

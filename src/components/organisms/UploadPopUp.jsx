@@ -41,7 +41,7 @@ function UploadPopUp(props) {
         // generateInstacesClasses(id)
         queryClient.invalidateQueries({queryKey: ['important_term', id]})  
         setToggle(!toggle)
-        // window.location.reload();
+        window.location.reload();
       }
     }
   })
@@ -58,7 +58,7 @@ function UploadPopUp(props) {
         // generateInstacesClasses(id)
         queryClient.invalidateQueries({queryKey: ['important_term', id]})
         setToggle(!toggle)
-        // window.location.reload();
+        window.location.reload();
       }
     }
   })

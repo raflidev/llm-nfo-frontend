@@ -11,7 +11,9 @@ function Step7ValidationPage() {
   const [domain, setDomain] = useState([])
   const {id} = useParams()
 
-  const {facetOP, insClass} = useContext(DataChatContext)
+  const {insClass} = useContext(DataChatContext)
+  console.log(insClass);
+  
   const queryClient = new QueryClient()
 
   const {mutate: saveItem, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveInstancesClassesByClassID,

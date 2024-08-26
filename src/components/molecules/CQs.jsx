@@ -6,6 +6,7 @@ import { Slide, toast } from 'react-toastify'
 import ButtonLoading from '../atoms/ButtonLoading'
 import DataChatContext from '../context/DataChatContext'
 import IconPlus from '../atoms/Icon/IconPlus'
+import { redirectLink } from '../../services/utils'
 
 function CQs(props) {
   const {setStep, setCq: setCQContext} = useContext(DataChatContext)
@@ -27,7 +28,7 @@ function CQs(props) {
           transition: Slide
         })
         setCQContext(cq)
-        setStep(2)
+        redirectLink(`/chat/${id}/2`)
       }
     }
   })
