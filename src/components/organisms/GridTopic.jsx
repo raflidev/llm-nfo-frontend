@@ -33,6 +33,7 @@ function GridTopic(props) {
             transition: Slide
           })
           queryClient.invalidateQueries({queryKey: ['topic']})
+          window.location.reload()
         }else{
           toast.error(response.data.message, {
             transition: Slide
@@ -51,6 +52,10 @@ function GridTopic(props) {
             localStorage.clear(); window.location.reload(); window.location.href = '/';
           }, 1000);
         }
+    },
+    onError: (error) => {
+      localStorage.clear()
+      window.location.reload()
     }
   })
 
@@ -92,15 +97,12 @@ function GridTopic(props) {
         client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID
       }
       mutateLogin(data)
-      window.location.reload()
     },
   });
 
 
   const logoutHandle = () => {
     mutateLogout()
-    localStorage.clear()
-    window.location.reload()
   }
 
 
