@@ -12,6 +12,7 @@ import ChatHistory from "./Pages/ChatHistory";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Visualization from "./Pages/Visualization";
 
 axios.defaults.withCredentials = true
 // set-cookie
@@ -26,6 +27,7 @@ function App() {
         <ToastContainer />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/visualization" element={<Visualization />} />
             <Route path="/chat/:id/:step" element={<ChatHistory />} />
           </Routes>
       </BrowserRouter>

@@ -103,6 +103,8 @@ function GridTopic(props) {
 
   const logoutHandle = () => {
     mutateLogout()
+    localStorage.clear()
+    window.location.reload()
   }
 
 
