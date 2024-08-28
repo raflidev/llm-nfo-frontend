@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Topic from '../molecules/Topic'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
@@ -17,6 +17,7 @@ function GridTopic(props) {
   const [toggle, setToggle] = useState(false)
   const [loading, setLoading] = useState(false)
   const [currentItem, setCurrentItem] = useState({})
+  const [isLogin, setIsLogin] = useState(false)
   const queryClient = new QueryClient()
   // const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
   const {data: user, isPending: isPendingProfile} = useQuery({queryKey: ['profile'], queryFn: () => getProfile()})
@@ -107,6 +108,11 @@ function GridTopic(props) {
     mutateLogout()
   }
 
+  useEffect(() => {
+    if (user) {
+      setIsLogin(true)
+    }
+  }, [user])
 
   return (
     <div className='flex justify-between flex-col min-h-screen'>
@@ -132,7 +138,7 @@ function GridTopic(props) {
           </div>
         </div>
         {
-          !isPendingProfile ?
+          isLogin ?
           <div className='grid grid-cols-1 px-4 pt-5 text-sm gap-4'>
             <Link to={`/`}>
               <Topic>
@@ -193,11 +199,11 @@ function GridTopic(props) {
           </div> 
           
           : 
-          !isPendingProfile ?
+          !isLogin ?
             <button onClick={() => login()} type="button" className={`w-full py-2 px-1 md:px-3 text-center rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
             <img src={google} alt="" />
             <span>
-              Login dengan Google
+              Login with Google
             </span>
             </button>
             :
