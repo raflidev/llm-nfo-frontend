@@ -7,7 +7,7 @@ import google from '../../assets/images/google.svg'
 import { Slide, toast } from 'react-toastify'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { deleteConversationById, getConversationByUserId } from '../../services/conversation.services'
-import { loginAuth, logoutAuth } from '../../services/auth.services'
+import { getProfile, loginAuth, logoutAuth } from '../../services/auth.services'
 import IconClose from '../atoms/Icon/IconClose'
 
 function GridTopic(props) {
@@ -18,17 +18,18 @@ function GridTopic(props) {
   const [loading, setLoading] = useState(false)
   const [currentItem, setCurrentItem] = useState({})
   const queryClient = new QueryClient()
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
-  const {data: dataTopic, isPending: isPendingDataTopic} = useQuery({queryKey: ['topic', user?.user_id], queryFn: () => getConversationByUserId(user?.user_id)})
+  // const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null)
+  const {data: user, isPending: isPendingProfile} = useQuery({queryKey: ['profile'], queryFn: () => getProfile()})
   
+  const {data: dataTopic, isPending: isPendingDataTopic} = useQuery({queryKey: ['topic', user?.data?.user_id], queryFn: () => getConversationByUserId(user?.data?.user_id)})  
   const navigate = useNavigate()
-
+  
   const {mutate: mutateLogin, isPending: isPendingLogin} = useMutation({mutationFn: loginAuth, 
     onSuccess: (response) => {
       console.log(response);
         if(response.status === 200) {
-          localStorage.setItem('user', JSON.stringify(response.data))
-          setUser(response.data)
+          // localStorage.setItem('user', JSON.stringify(response.data))
+          // setUser(response.data)
           toast.success(response.data.message, {
             transition: Slide
           })
@@ -56,6 +57,7 @@ function GridTopic(props) {
     onError: (error) => {
       localStorage.clear()
       window.location.reload()
+      window.location.href = '/';
     }
   })
 
@@ -129,16 +131,21 @@ function GridTopic(props) {
             <IconClose/>
           </div>
         </div>
-        <div className='grid grid-cols-1 px-4 pt-5 text-sm gap-4'>
-          <Link to={`/`}>
-            <Topic>
-              <span>New Chat</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-            </Topic>
-          </Link>
-        </div>
+        {
+          !isPendingProfile ?
+          <div className='grid grid-cols-1 px-4 pt-5 text-sm gap-4'>
+            <Link to={`/`}>
+              <Topic>
+                <span>New Chat</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </Topic>
+            </Link>
+          </div>
+          :
+          ''
+        }
 
         <div className='grid grid-cols-1 px-2 pt-5 text-sm gap-3 overflow-y-auto'>
           {  (dataTopic?.data !== null && !isPendingDataTopic) ?
@@ -175,25 +182,28 @@ function GridTopic(props) {
       </div>
 
       <div className=' px-4 pb-5'>
-        {/* <button onClick={() => checkLoginState()}>Google Auth</button> */}
         {
           user ? 
           <div className='flex flex-col gap-2 space-y-2'>
             <div className='flex space-x-2 items-center'>
-              <img src={user.profile_pic_url} className='w-8 rounded-full' alt="" srcSet="" />
-              <span>{user.name}</span>
+              <img src={user?.data.profile_pic} className='w-8 rounded-full' alt="" srcSet="" />
+              <span>{user?.data.name}</span>
             </div>
             <button className='bg-red-500 text-white px-2 py-1 rounded text-sm' onClick={() => logoutHandle()}>Logout</button>
           </div> 
           
           : 
-
-          <button onClick={() => login()} type="button" className={`w-full py-2 px-1 md:px-3 text-center rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
-          <img src={google} alt="" />
-          <span>
-            Login dengan Google
-          </span>
-          </button>
+          !isPendingProfile ?
+            <button onClick={() => login()} type="button" className={`w-full py-2 px-1 md:px-3 text-center rounded-md text-base font-semibold flex justify-center space-x-1 md:space-x-2 duration-300  bg-transparent border border-black-500 hover:bg-primary-200 hover:border-transparent`}>
+            <img src={google} alt="" />
+            <span>
+              Login dengan Google
+            </span>
+            </button>
+            :
+            <div className="h-16 bg-gray-600 rounded-md p-4 max-w-sm animate-pulse">
+              
+            </div>
         }
       </div>
     </div>

@@ -13,7 +13,6 @@ function Step7ValidationPage() {
   const {id} = useParams()
 
   const {insClass} = useContext(DataChatContext)
-  console.log(insClass);
   
   const queryClient = new QueryClient()
 

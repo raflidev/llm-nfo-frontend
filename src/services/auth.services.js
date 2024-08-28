@@ -11,3 +11,10 @@ export const logoutAuth = async () => {
         return res.data
     })
 }
+
+// https://ontology-api.hidayattaufiqur.dev/profile
+export const getProfile = async () => {
+    return await axios.get(`${process.env.REACT_APP_API_URI}/profile`).then((res) => {
+        return res.data
+    })
+}

@@ -94,9 +94,14 @@ function ValidationDataOnClass(props) {
             {termItem.map((cqItem, indexCQ) => {
               return (
                 <div key={indexCQ}>
-                  <div className="border border-black rounded p-4">
-                    <h1 className='font-semibold'>Class name: {cqItem[0]}</h1>
-                    <span className='text-sm'>{name} name:</span>
+                  <div className="border border-black rounded p-4 space-y-1">
+                    <div className='space-y-1'>
+                      <div className='text-sm font-semibold'>Class name: </div>
+                      <div className='text-lg font-semibold'>{cqItem[0]}</div>
+                    </div>
+                    <div>
+                      <span className='text-sm'>{name} name:</span>
+                    </div>
                     {
                       cqItem[1].map((item, index) => {
                         return (

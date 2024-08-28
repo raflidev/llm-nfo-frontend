@@ -116,13 +116,19 @@ function ValidationDataFacetDomain(props) {
               return (
                 <div key={indexCQ}>
                   <div className="border border-black rounded p-4 space-y-4">
-                    <h1 className='font-semibold'>Class Name: {cqItem[0]}</h1>
+                    <div className='space-y-1'>
+                      <h1 className='text-sm font-semibold'>Class Name: </h1>
+                      <div className='text-lg font-semibold'>{cqItem[0]}</div>
+                    </div>
                     {
                       cqItem[1].map((item, index) => {
                         return (
                           <div className='space-y-2' key={index}>
-                            <div className="">
-                              <div className='font-semibold'>Object Name: {item[0]}</div>
+                            <div className="space-y-4">
+                              <div className='space-y-1'>
+                                <h1 className='text-sm font-semibold'>Object Name: </h1>
+                                <div className='text-lg font-semibold'>{item[0]}</div>
+                              </div>
                               <div key={index} className='grid gap-3 items-center'>
                                 {
                                   item[1].map((item2, index2) => {
