@@ -45,7 +45,7 @@ function ChatHistory() {
   const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
   const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
   const {data: classAndDataProperty, isPending: isPendingClassAndDataProperty} = useQuery({queryKey: ['class_and_data_property', id], queryFn: () => getClassesAndDataPropertiesByConvID(id)})
-  // console.log(classAndDataProperty);
+  console.log(classAndDataProperty);
   const {data: instancesClasses, isPending: isPendingInstancesClasses} = useQuery({queryKey: ['instances_class', id], queryFn: () => getInstancesClassesByConvID(id)})
   
   useEffect(() => {

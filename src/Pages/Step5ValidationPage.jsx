@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import ValidationDataOnClass from '../components/organisms/ValidationDataOnClass'
 import DataChatContext from '../components/context/DataChatContext'
-import { postSavedataPropertyByConvID } from '../services/dataProperty.services'
+import { deleteDataPropertyByID, postSavedataPropertyByConvID } from '../services/dataProperty.services'
 import { redirect, useParams } from 'react-router-dom'
 import { Slide, toast } from 'react-toastify'
 import { QueryClient, useMutation } from '@tanstack/react-query'
-import { postSaveObjectPropertiesByConvID } from '../services/objectProperty.services'
+import { deleteObjectPropertyByID, postSaveObjectPropertiesByConvID } from '../services/objectProperty.services'
 import { redirectLink } from '../services/utils'
 
 function Step5ValidationPage() {
@@ -18,7 +18,6 @@ function Step5ValidationPage() {
   const {termDP, termOP, setStep} = useContext(DataChatContext)
   const queryClient = new QueryClient()
   
-  console.log(termDP);
   
   const {mutate: saveItemFuncDP, isPending: isPendingSaveItemDP} = useMutation({mutationFn: postSavedataPropertyByConvID,
     onSuccess: (response) => {
@@ -27,10 +26,35 @@ function Step5ValidationPage() {
           transition: Slide
         })
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
-        // setStep(4)
       }
     }
   })
+
+  // deleteDataPropertyByID
+  const {mutate: deleteItemDP, isPending: isPendingDeleteItemDP} = useMutation({mutationFn: deleteDataPropertyByID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+        // setMenuActive(1)
+      }
+    }
+  })
+
+  const {mutate: deleteItemOP, isPending: isPendingDeleteItemOP} = useMutation({mutationFn: deleteObjectPropertyByID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+        // setMenuActive(1)
+      }
+    }
+  })
+
   const {mutate: saveItemFuncOP, isPending: isPendingSaveItemOP} = useMutation({mutationFn: postSaveObjectPropertiesByConvID,
     onSuccess: (response) => {
       if(response.status === 200){
@@ -38,14 +62,20 @@ function Step5ValidationPage() {
           transition: Slide
         })
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
-        // setStep(4)
-        redirectLink(`/chat/${id}/6`)
+        // redirectLink(`/chat/${id}/6`)
       }
     }
   })
 
   const saveTermDP = (data) => {
-    
+    data.deleteItem.map((item) => {
+      var delItem = {
+        "id": item[0],
+        "data_properties_ids": item[1]
+      }
+      
+      deleteItemDP(delItem)
+    })
     data.item.map((item) => {
       var temp =  {
         "id": item[2],
@@ -58,15 +88,25 @@ function Step5ValidationPage() {
             }
           })
         }
-        // console.log(temp);
         
       saveItemFuncDP(temp)
-      setMenuActive(1)
-      })
-    
+    })
+
+    setMenuActive(1)
   }
   
   const saveTermOP = (data) => {
+
+    data.deleteItem.map((item) => {
+      var delItem = {
+        "id": item[0],
+        "data_properties_ids": item[1]
+      }
+      console.log(delItem);
+      
+      deleteItemOP(delItem)
+    })
+    
     data.item.map((item) => {
       var temp =  {
         "id": item[2],
@@ -78,19 +118,13 @@ function Step5ValidationPage() {
             }
           })
         }
-
-        // console.log(temp);
-        
         
       saveItemFuncOP(temp)
-      
-      })
+    })
+
+    redirectLink(`/chat/${id}/6`)
   }
 
-  // useEffect(() => {
-  //   setStep(5)
-  //   // setMenuActive(0)
-  // }, [])
 
   return (
     <div>

@@ -7,7 +7,7 @@ import { postSavedataPropertyByConvID } from '../services/dataProperty.services'
 import { Slide, toast } from 'react-toastify'
 import { useParams } from 'react-router-dom'
 import ValidationDataFacetDomain from '../components/organisms/ValidationDataFacetDomain'
-import { postSaveObjectPropertiesByConvID } from '../services/objectProperty.services'
+import { deleteDomainByID, deleteRangeByID, postSaveObjectPropertiesByConvID } from '../services/objectProperty.services'
 import { redirectLink } from '../services/utils'
 
 function Step6ValidationPage() {
@@ -45,6 +45,31 @@ function Step6ValidationPage() {
     }
   })
 
+  const {mutate: deleteRanges, isPending: isPendingDeleteRanges} = useMutation({mutationFn: deleteRangeByID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+        
+      }
+    }
+  })
+
+  const {mutate: deleteDomains, isPending: isPendingDeleteDomains} = useMutation({mutationFn: deleteDomainByID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+        
+      }
+    }
+  })
+
+
   const saveTermDP = (data) => {
     data.item.map((item) => {
       var temp =  {
@@ -65,6 +90,25 @@ function Step6ValidationPage() {
   }
 
   const saveDomain = (data) => {
+    data.rangeDelete.map((item) => {
+      var delItem = {
+        "id": item[0],
+        "range_ids": item[1]
+      }
+      console.log(delItem);
+      
+      deleteRanges(delItem)
+    })
+
+    data.domainDelete.map((item) => {
+      var delItem = {
+        "id": item[0],
+        "domain_ids": item[1]
+      }
+      console.log(delItem);
+      
+      deleteDomains(delItem)
+    })
     var hasildomain = []
     data.item.map((item) => {
       var temp = {

@@ -3,9 +3,9 @@ import LayoutPage from '../components/templates/LayoutPage'
 
 function Visualization() {
   return (
-    <LayoutPage>
+    <LayoutPage visualization={true}>
       <div className='pt-5'>
-        <iframe src={`http://owlgred.lumii.lv/online_visualization/`} className='w-full h-[35rem]' title='ontology'></iframe>
+        <iframe src={`http://owlgred.lumii.lv/online_visualization/`} className='w-full h-[45rem]' title='ontology'></iframe>
       </div>
     </LayoutPage>
   )

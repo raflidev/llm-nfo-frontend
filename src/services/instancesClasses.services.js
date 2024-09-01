@@ -24,11 +24,34 @@ export const getInstancesClassesByConvID = async (data) => {
   }
 };
 
-// https://ontology-api.hidayattaufiqur.dev/generation/classes/instance/:class_id
 export const postSaveInstancesClassesByClassID = async (data) => {
   try {
     const response = await axios.post(`${process.env.REACT_APP_API_URI}/generation/classes/instance/${data.id}`, data, {
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'charset': 'utf-8'
+      }
+    })
+    return response
+  } catch (error) {
+    return error
+  }
+}
+
+export const deleteInstancesClassesByClassID = async (data) => {
+  console.log(data);
+  
+  try {
+    const response = await axios.delete(`${process.env.REACT_APP_API_URI}/generation/classes/instance/${data.id}`, {
+      data: {
+        "instances_ids": data.instances_ids
+      }
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
     })
     return response
   } catch (error) {

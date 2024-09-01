@@ -17,3 +17,18 @@ export const postSavedataPropertyByConvID = async (data) => {
     return error
   }
 }
+
+export const deleteDataPropertyByID = async (data) => {
+  try {
+    const response = await axios.delete(`${process.env.REACT_APP_API_URI}/generation/data-properties/${data.id}`, {
+      data
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    return response
+  } catch (error) {
+    return error
+  }
+}

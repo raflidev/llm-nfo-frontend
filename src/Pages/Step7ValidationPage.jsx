@@ -3,7 +3,7 @@ import DataChatContext from '../components/context/DataChatContext'
 import { QueryClient, useMutation } from '@tanstack/react-query'
 import { Slide, toast } from 'react-toastify'
 import { useParams } from 'react-router-dom'
-import { postSaveInstancesClassesByClassID } from '../services/instancesClasses.services'
+import { deleteInstancesClassesByClassID, postSaveInstancesClassesByClassID } from '../services/instancesClasses.services'
 import ValidationDataInstancesClass from '../components/organisms/ValidationDataInstancesClass'
 import { redirectLink } from '../services/utils'
 
@@ -24,7 +24,19 @@ function Step7ValidationPage() {
         })
         queryClient.invalidateQueries({queryKey: ['instances_class', id]})
         // setStep(4)
-        redirectLink(`/chat/${id}/7`)
+        // redirectLink(`/chat/${id}/7`)
+      }
+    }
+  })
+  const {mutate: deleteItem, isPending: isPendingDeleteItem} = useMutation({mutationFn: deleteInstancesClassesByClassID,
+    onSuccess: (response) => {
+      if(response.status === 200){
+        toast.success(response.data.message, {
+          transition: Slide
+        })
+        queryClient.invalidateQueries({queryKey: ['instances_class', id]})
+        // setStep(4)
+        // redirectLink(`/chat/${id}/7`)
       }
     }
   })
@@ -33,6 +45,12 @@ function Step7ValidationPage() {
 
   const saveTerm = (data) => {
     // console.log(data);
+    data.deleteItem.map((item) => {
+      deleteItem({
+        id: item[0],
+        instances_ids: item[1]
+      })
+    })
     const temp = []
 
     data.item.map((item) => {
@@ -47,6 +65,8 @@ function Step7ValidationPage() {
       // console.log(temp);
       saveItem(temp)
     })
+
+    redirectLink(`/chat/${id}/7`)
 
     
   }

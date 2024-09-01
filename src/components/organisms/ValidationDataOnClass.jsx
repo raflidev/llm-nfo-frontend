@@ -16,9 +16,8 @@ function ValidationDataOnClass(props) {
   const queryClient = new QueryClient()
   
   const [termItem, setTermItem] = useState(data)
+  const [deleteItem, setDeleteItem] = useState([])
 
-  // console.log(data);
-  
   const [confirmation, setConfirmation] = useState(false)
   const [saveItem, setSaveItem] = useState(
     termItem?.map((item) => {
@@ -46,19 +45,40 @@ function ValidationDataOnClass(props) {
     })
   }
 
-  const deleteCQ = (cq, indexCQ, indexItem) => {
+  const deleteCQ = (cq, indexCQ, indexItem, idClass) => {
     // delete item by indexCQ
+    // console.log(cq, );
+    
+    setDeleteItem((prev) => {
+      let newItems = [...prev]
+      if(newItems.length === 0){
+        newItems.push([idClass[2], [cq[1]]])
+      }else{
+        let index = newItems.findIndex((item) => item[0] === idClass[2])
+        if(index === -1){
+          newItems.push([idClass[2], [cq[1]]])
+        }else{
+          newItems[index][1].push(cq[1])
+        }
+      }
+      return newItems
+    })
+
     setTermItem((prev) => {
       let newItems = [...prev]
       newItems[indexCQ][1].splice(indexItem, 1)
       return newItems
     })
+
+    
+    
   }
 
   const saveAllItem = () => {
     const data = {
       // "id": 
-      "item": termItem
+      "item": termItem,
+      "deleteItem": deleteItem
     }
     saveFunction(data)
     // setItem(data)
@@ -118,7 +138,7 @@ function ValidationDataOnClass(props) {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                   </svg>
                                 </button>
-                                <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQ(cqItem, indexCQ, index)}>
+                                <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQ(item, indexCQ, index, cqItem)}>
                                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                                   </svg>

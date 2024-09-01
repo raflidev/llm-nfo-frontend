@@ -7,6 +7,7 @@ import ButtonLoading from '../atoms/ButtonLoading'
 import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../context/DataChatContext'
 import IconDownload from '../atoms/Icon/IconDownload'
+import IconChart from '../atoms/Icon/IconChart'
 
 function ValidationDataInstancesClass(props) {
   const {data, saveFunction} = props
@@ -19,6 +20,7 @@ function ValidationDataInstancesClass(props) {
   const queryClient = new QueryClient()
   
   const [termItem, setTermItem] = useState(data)
+  const [deleteItem, setDeleteItem] = useState([])
   const [confirmation, setConfirmation] = useState(false)
   const changeHandle = (e, indexCQ) => {
     console.log(termItem);
@@ -50,19 +52,36 @@ function ValidationDataInstancesClass(props) {
     })
   }
 
-  const deleteCQRange = (cq, indexCQ, index2) => {
+  const deleteCQRange = (cq, indexCQ, index2, class_id) => {
     // delete item by indexCQ
     setTermItem((prev) => {
       let newItems = [...prev]
       newItems[indexCQ].instances.splice(index2, 1)
       return newItems
     })
+
+    setDeleteItem((prev) => {
+      let newItems = [...prev]
+      if(newItems.length === 0){
+        newItems.push([class_id, [cq.instance_id]])
+      }else{
+        let index = newItems.findIndex((item) => item[0] === class_id)
+        if(index === -1){
+          newItems.push([class_id, [cq.instance_id]])
+        }else{
+          newItems[index][1].push(cq.instance_id)
+        }
+      }
+      return newItems
+    })
+    
   }
   
 
   const saveAllItem = () => {
     const data = {
-      "item": termItem
+      "item": termItem,
+      'deleteItem': deleteItem
     }
     // setItem(data)
     // console.log(data);
@@ -119,7 +138,7 @@ function ValidationDataInstancesClass(props) {
 
                                                
                            <div className='flex space-x-1'>
-                           <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQRange(cqItem, indexCQ, index2)}>
+                           <button className='hover:bg-red-500 p-1 rounded duration-200' onClick={() => deleteCQRange(item2, indexCQ, index2, cqItem.class_id)}>
                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                              </svg>
@@ -143,10 +162,16 @@ function ValidationDataInstancesClass(props) {
           {
             !confirmation ? 
             <div className='space-x-2 flex justify-between pt-5'>
-               <a href={`https://ontology-api.hidayattaufiqur.dev/generation/ontology/${id}`} className='flex space-x-2 items-center py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300'>
-                <IconDownload/>
-                <span>Download</span>
-              </a>
+              <div className='space-x-2 flex'>
+                <a href={`https://ontology-api.hidayattaufiqur.dev/generation/ontology/${id}`} className='flex space-x-2 items-center py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300'>
+                  <IconDownload/>
+                  <span>Download</span>
+                </a>
+                <a href={`/visualization`} className='flex space-x-2 items-center py-2 px-3 bg-yellow-600 hover:bg-yellow-900 rounded-lg text-sm duration-300'>
+                  <IconChart/>
+                  <span>Visualization</span>
+                </a>
+              </div>
               <div>
                 <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
                 <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => saveAllUI()}>Save All</button>

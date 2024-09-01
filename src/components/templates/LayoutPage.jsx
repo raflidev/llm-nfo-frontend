@@ -3,7 +3,7 @@ import GridTopic from '../organisms/GridTopic'
 import IconMenu from '../atoms/Icon/IconMenu'
 
 export default function LayoutPage(props) {
-  const { children } = props
+  const { children, visualization } = props
   const [toggle, setToggle] = useState(false)
 
   return (
@@ -14,7 +14,7 @@ export default function LayoutPage(props) {
       </div>
       <div className="w-11/12 md:w-10/12">
       <div className='flex justify-center md:h-[75vh] xl:h-[90vh] overflow-y-auto'>
-        <div className='w-full md:w-11/12 lg:w-8/12 px-2 md:px-10'>
+        <div className={` ${visualization ? 'w-11/12' : 'w-full md:w-11/12 lg:w-8/12 px-2 md:px-10'}`}>
           <div className={`${toggle ? 'fixed' : 'hidden' } md:hidden left-0 w-10/12 bg-secondary-bg min-h-screen`}>
               <GridTopic setToggleMenu={setToggle} toggleMenu={toggle}/>
           </div>
