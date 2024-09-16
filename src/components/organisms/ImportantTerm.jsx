@@ -26,14 +26,6 @@ function ImportantTerm() {
   )
   
 
-  // useEffect(() => {
-  //     if(importantTerm?.data.data.length > 0) {
-  //       const Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
-        
-  //       setITerm(Term?.terms.slice(1, -1).split(","))
-  //     }
-  // }, [])
-
 
   const {mutate: saveItemFunc, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveImportantTempByConvID,
     onSuccess: (response) => {
@@ -100,10 +92,6 @@ function ImportantTerm() {
     })
   }
 
-  // useEffect(() => {
-  //   setTermItem(iTerm)
-  // }, [iTerm])
-
   return (
     <>
       {
@@ -154,15 +142,25 @@ function ImportantTerm() {
 
           {
             !confirmation ? 
-            <div className='space-x-2 flex justify-end pt-5'>
-              <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
-              <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(iTerm.map((cq) => {return true}))}}>Save All</button>
+            <div className='space-x-2 flex justify-between pt-5 items-center'>
+              <div>
+                <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300 bg-yellow-600 hover:bg-yellow-900' onClick={() => {navigator.clipboard.writeText(iTerm);toast.success('The term was copied successfully', {transition: Slide})}}>Copy All Term</button>
+              </div>
+              <div className='space-x-2 flex '>
+                <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => resetAllCQ()}>Reset</button>
+                <button className='py-2 px-3 bg-blue-primary hover:bg-blue-900 rounded-lg text-sm duration-300' onClick={() => {setConfirmation(!confirmation);setSaveItem(iTerm.map((cq) => {return true}))}}>Save All</button>
+              </div>
             </div>
             :
-            <div className='space-x-2 flex justify-end pt-5'>
-              <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
-              {/* <ButtonLoading onClick={() => saveAllItem(iTerm)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading> */}
-              <ButtonLoading isLoading={isPendingSaveItem} onClick={() => saveAllItem(iTerm)} type='button'>Are you sure?</ButtonLoading>
+            <div className='space-x-2 flex justify-between pt-5 items-center'>
+              <div>
+                <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300 bg-yellow-600 hover:bg-yellow-900' onClick={() => {navigator.clipboard.writeText(iTerm);toast.success('The term was copied successfully',  {transition: Slide})}}>Copy All Term</button>
+              </div>
+              <div className='space-x-2 flex '>
+                <button className='py-2 px-3 hover:underline rounded-lg text-sm duration-300' onClick={() => setConfirmation(!confirmation)}>Cancel</button>
+                {/* <ButtonLoading onClick={() => saveAllItem(iTerm)} isLoading={isPendingSaveCQs} type='button'>Are you sure?</ButtonLoading> */}
+                <ButtonLoading isLoading={isPendingSaveItem} onClick={() => saveAllItem(iTerm)} type='button'>Are you sure?</ButtonLoading>
+              </div>
             </div>
           }
         </>

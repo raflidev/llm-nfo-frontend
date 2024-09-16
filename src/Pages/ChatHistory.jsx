@@ -43,18 +43,16 @@ function ChatHistory() {
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
   const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
+  console.log(importantTerm);
+  
   const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
   const {data: classAndDataProperty, isPending: isPendingClassAndDataProperty} = useQuery({queryKey: ['class_and_data_property', id], queryFn: () => getClassesAndDataPropertiesByConvID(id)})
-  console.log(classAndDataProperty);
   const {data: instancesClasses, isPending: isPendingInstancesClasses} = useQuery({queryKey: ['instances_class', id], queryFn: () => getInstancesClassesByConvID(id)})
   
   useEffect(() => {
     if(conversation) {
-      const data = JSON.parse(conversation?.data?.competency_questions)
-      var Term = null
       if(importantTerm?.data.data.length > 0) {
-        Term = importantTerm?.data.data[importantTerm?.data.data.length - 1]
-        setITerm(Term?.terms.slice(1, -1).split(","))
+        setITerm(importantTerm?.data.data[0].terms)
       }
       if(classes?.data.data.length > 0) {
         const Class = classes?.data.data
@@ -62,7 +60,6 @@ function ChatHistory() {
       }
       if(classAndDataProperty?.data.data.length > 0) {
         const DataProperty = classAndDataProperty?.data.data
-        // console.log("Data Property:", DataProperty);  
         
         setTermDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_id, item.data_property_type]), item.class_id]))
         setFacetDP(DataProperty.map((item) => [item.class_name, item.data_properties.map((item) => [item.data_property_name, item.data_property_type, item.data_property_id]), item.class_id]))
@@ -72,22 +69,15 @@ function ChatHistory() {
       }
       
 
-    if(classAndDataProperty?.data.data.length > 0) {
-        const ObjectProperty = classAndDataProperty?.data.data
-        setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id]), item.class_id]))
-        setFacetOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.domains, item.object_property_id]), item.class_id]))
-        // console.log(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id]), item.class_id]));
-      
-    }
-      // if(data){
-      //   importantTerm?.data.data.length > 0 ? setStep(3) : setStep(2)
-      // }
+      if(classAndDataProperty?.data.data.length > 0) {
+          const ObjectProperty = classAndDataProperty?.data.data
+          setTermOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.object_property_id]), item.class_id]))
+          setFacetOP(ObjectProperty.map((item) => [item.class_name, item.object_properties.map((item) => [item.object_property_name, item.domains, item.object_property_id]), item.class_id]))
+      }
+
       if(validCQ?.data.length > 0) {
-        const data = validCQ?.data.filter((item) => item.is_valid).map((item) => item.question)
-        // HARDCODED 
-        setCq(data[0].slice(1,-1).split(","))
-      }else{
-        setCq(data.competency_questions)
+        console.log(validCQ);
+        setCq(validCQ?.data[0].question)
       }
       setChat([conversation?.data])
     }
@@ -128,7 +118,7 @@ function ChatHistory() {
                   <div className='text-sm'>STEP {step}</div>
                   <div className='font-semibold text-3xl'>Reuse existing ontologies</div>
                   <div className='font-light'>
-                  Reuse Existing Ontologies: Integrate and adapt ontologies that have been previously developed to fit within your current project. This process involves selecting relevant ontologies, aligning them with your domain, and making necessary modifications to ensure compatibility and consistency with your project's requirements.
+                  On this page, you can search for existing ontologies. Just enter a topic based on the scope and domain you defined in the previous step.
                   </div>
                 </div> 
 

@@ -79,7 +79,7 @@ function Home() {
           :
           <div className='flex justify-center h-[40rem] md:h-full'>
             <div className="my-auto">
-              <div  class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-red-500 transition ease-in-out duration-150">
+              <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-red-500 transition ease-in-out duration-150">
                 Please log in to continue
               </div>
             </div>
