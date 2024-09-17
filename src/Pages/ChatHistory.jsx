@@ -43,7 +43,6 @@ function ChatHistory() {
   const {data: conversation, isPending: isPendingConversation} = useQuery({queryKey: ['conversation', id], queryFn: () => getConversationById(id)})
   const {data: validCQ, isPending: isPendingValidCQ} = useQuery({queryKey: ['CQ', id], queryFn: () => getConversationCQs(id)})
   const {data: importantTerm, isPending: isPendingImportantTerm} = useQuery({queryKey: ['important_term', id], queryFn: () => getImportantTempByConvID(id)})
-  console.log(importantTerm);
   
   const {data: classes, isPending: isPendingClasses} = useQuery({queryKey: ['classes', id], queryFn: () => getClassesByConvID(id)})
   const {data: classAndDataProperty, isPending: isPendingClassAndDataProperty} = useQuery({queryKey: ['class_and_data_property', id], queryFn: () => getClassesAndDataPropertiesByConvID(id)})
@@ -78,6 +77,10 @@ function ChatHistory() {
       if(validCQ?.data.length > 0) {
         console.log(validCQ);
         setCq(validCQ?.data[0].question)
+      }else{
+        var data = JSON.parse(conversation?.data.competency_questions)
+        setCq(data.competency_questions)
+        
       }
       setChat([conversation?.data])
     }
