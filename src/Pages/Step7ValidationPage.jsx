@@ -18,6 +18,8 @@ function Step7ValidationPage() {
 
   const {mutate: saveItem, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveInstancesClassesByClassID,
     onSuccess: (response) => {
+      console.log(response);
+      
       if(response.status === 200){
         toast.success(response.data.message, {
           transition: Slide
@@ -62,13 +64,14 @@ function Step7ValidationPage() {
       item.instances.map((item2) => {
         temp['instances'].push(item2)
       })
-      // console.log(temp);
+      console.log(temp);
+
+      
       saveItem(temp)
     })
-
-    redirectLink(`/chat/${id}/7`)
-
-    
+    setInterval(() => {
+      redirectLink(`/chat/${id}/7`)
+    }, 1000)
   }
 
 
