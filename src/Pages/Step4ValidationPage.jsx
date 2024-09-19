@@ -20,7 +20,9 @@ function Step4ValidationPage() {
         queryClient.invalidateQueries({queryKey: ['classes', id]})
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
         // setStep(5)
-        redirectLink(`/chat/${id}/5`)
+        setInterval(() => {
+          redirectLink(`/chat/${id}/5`)
+        }, 1000)
       }
     },
     onError: (error) => {

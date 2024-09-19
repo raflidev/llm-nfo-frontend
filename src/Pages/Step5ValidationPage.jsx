@@ -121,8 +121,9 @@ function Step5ValidationPage() {
         
       saveItemFuncOP(temp)
     })
-
-    redirectLink(`/chat/${id}/6`)
+    setInterval(() => {
+      redirectLink(`/chat/${id}/6`)
+    }, 1000)
   }
 
 

@@ -28,7 +28,9 @@ function CQs(props) {
           transition: Slide
         })
         setCQContext(cq)
-        redirectLink(`/chat/${id}/2`)
+        setInterval(() => {
+          redirectLink(`/chat/${id}/2`)
+        }, 1000)
       }
     }
   })

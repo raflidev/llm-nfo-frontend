@@ -39,8 +39,9 @@ function Step6ValidationPage() {
           transition: Slide
         })
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
-        
-        redirectLink(`/chat/${id}/7`)
+        setInterval(() => {
+          redirectLink(`/chat/${id}/7`)
+        }, 1000)
       }
     }
   })
