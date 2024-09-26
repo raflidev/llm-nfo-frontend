@@ -6,11 +6,26 @@ import { postSaveClassesByClassesID } from '../services/classes.services'
 import { Slide, toast } from 'react-toastify'
 import DataChatContext from '../components/context/DataChatContext'
 import { redirectLink } from '../services/utils'
+import { getInstancesClasses } from '../services/instancesClasses.services'
 
 function Step4ValidationPage() {
   const {id} = useParams()
   const {setStep, termClasses, setTermClasses} = useContext(DataChatContext)
   const queryClient = new QueryClient()
+
+  const {mutate: generateInstacesClasses, isPending: isPendingGenerateInstacesClasses} = useMutation({
+    mutationFn: getInstancesClasses,
+    onSuccess: (response) => {
+      console.log(response);
+      if(response.status === 200) {
+        toast.success(response.data.message, {
+          transition: Slide 
+        })
+        // queryClient.invalidateQueries({queryKey: ['instances_class', id]})
+      }
+    }
+  })
+
   const {mutate: mutateSaveClasses, isPending: isPendingSaveItem} = useMutation({mutationFn: postSaveClassesByClassesID,
     onSuccess: (response) => {
       if(response.status === 200){
@@ -19,6 +34,7 @@ function Step4ValidationPage() {
         })
         queryClient.invalidateQueries({queryKey: ['classes', id]})
         queryClient.invalidateQueries({queryKey: ['class_and_data_property', id]})
+        generateInstacesClasses(id)
         // setStep(5)
         setInterval(() => {
           redirectLink(`/chat/${id}/5`)
