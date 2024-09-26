@@ -75,11 +75,11 @@ function ChatHistory() {
       }
 
       if(validCQ?.data.length > 0) {
-        console.log(validCQ);
         setCq(validCQ?.data[0].question)
       }else{
         var data = JSON.parse(conversation?.data.competency_questions)
-        setCq(data.competency_questions)
+        
+        setCq(Object.entries(data.competency_questions).map(([key, value]) => value))
         
       }
       setChat([conversation?.data])

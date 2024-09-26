@@ -21,7 +21,9 @@ function GridCQ(props) {
                       cq !== undefined && cq.length > 0 ?
                       <CQs item={cq} index={index} setValue={setCq}/>
                       :
-                      <div>empty</div>
+                      console.log(cq)
+                      
+                      
                     }
                   </div>
                 </Chat>
